@@ -1,7 +1,7 @@
 @DefaultAnnotationForParameters(NonNull.class)
-@ReturnValuesAreNonnullByDefault
+@DefaultAnnotationForMethods(NonNull.class)
 package io.briones.example;
 
+import edu.umd.cs.findbugs.annotations.DefaultAnnotationForMethods;
 import edu.umd.cs.findbugs.annotations.DefaultAnnotationForParameters;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.ReturnValuesAreNonnullByDefault;

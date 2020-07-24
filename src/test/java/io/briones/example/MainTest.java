@@ -23,11 +23,6 @@ public class MainTest {
     @Nested
     public class GivenAnInnerClass {
         @Test
-        public void those_tests_should_also_pass() {
-
-        }
-
-        @Test
         @Disabled
         public void disable_test_should_be_skipped() {
             assertThat("this").isNotEqualTo("that");

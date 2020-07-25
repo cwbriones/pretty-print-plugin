@@ -11,83 +11,134 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.internal.logging.text.StyledTextOutput
 import org.gradle.internal.logging.text.StyledTextOutputFactory
 import org.gradle.kotlin.dsl.named
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.time.Duration
 import javax.inject.Inject
 
 class PrettyPrintTestPlugin @Inject constructor(
     private val outputFactory: StyledTextOutputFactory
 ) : Plugin<Project> {
+
     override fun apply(project: Project) {
         val out = outputFactory.create(javaClass)
-        val standardEvents = arrayOf(
-            TestLogEvent.FAILED,
-            TestLogEvent.PASSED,
-            TestLogEvent.SKIPPED
-        )
         project.tasks.named<Test>("test") {
             testLogging {
-                events(*standardEvents)
+                setEvents(listOf<TestLogEvent>())
+
                 exceptionFormat = TestExceptionFormat.FULL
-                showExceptions = true
-                showCauses = true
-                showStackTraces = true
+                showExceptions = false
+                showStackTraces = false
+                showCauses = false
 
                 info {
                     events(
-                        *standardEvents,
-                        TestLogEvent.STANDARD_OUT
-                    )
-                    exceptionFormat = TestExceptionFormat.FULL
-                }
-
-                debug {
-                    events(
-                        *standardEvents,
                         TestLogEvent.STANDARD_OUT,
                         TestLogEvent.STANDARD_ERROR
                     )
                     exceptionFormat = TestExceptionFormat.FULL
                 }
 
-                afterSuite { suite, result ->
+                debug {
+                    events(
+                        TestLogEvent.STANDARD_OUT,
+                        TestLogEvent.STANDARD_ERROR
+                    )
+                    exceptionFormat = TestExceptionFormat.FULL
+                }
+
+                afterSuite(out) { suite, result ->
                     if (suite.parent != null) {
                         return@afterSuite
                     }
                     val elapsed = durationToHumanString(Duration.ofMillis(result.endTime - result.startTime))
-                    val resultSummary =
-                        listOf("${result.resultType} (${result.testCount} tests",
-                               "${result.successfulTestCount} passed",
-                               "${result.failedTestCount} failed",
-                               "${result.skippedTestCount} skipped)").joinToString(", ")
-                    val summary = joinInBox(
-                        "${project.name}$path $resultSummary in $elapsed",
-                        "",
-                        "Report: ${reports.html.entryPoint}"
-                    )
-                    val style = when (result.resultType) {
-                        TestResult.ResultType.FAILURE -> StyledTextOutput.Style.Failure
-                        else -> StyledTextOutput.Style.Success
+                    out.style(StyledTextOutput.Style.Success)
+                        .append("  ${result.successfulTestCount} passing")
+                        .withStyle(StyledTextOutput.Style.Normal)
+                        .println(" ($elapsed)")
+                    if (result.failedTestCount > 0) {
+                        out.withStyle(StyledTextOutput.Style.Failure)
+                            .println("  ${result.failedTestCount} failing")
                     }
-                    out.style(style).println(summary)
+                    if (result.skippedTestCount > 0) {
+                        out.withStyle(StyledTextOutput.Style.Info)
+                            .println("  ${result.skippedTestCount} skipped")
+                    }
                 }
             }
         }
     }
 
     /** Convenience extension for specifying an after-suite callback. */
-    private fun Test.afterSuite(action: (TestDescriptor, TestResult) -> Unit) {
+    private fun Test.afterSuite(out: StyledTextOutput, action: (TestDescriptor, TestResult) -> Unit) {
         addTestListener(object : TestListener {
             override fun beforeTest(testDescriptor: TestDescriptor?) {}
+
             override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
                 if (suite == null || result == null) {
                     return
                 }
                 action(suite, result)
             }
-            override fun beforeSuite(suite: TestDescriptor?) {}
+
+            override fun beforeSuite(suite: TestDescriptor?) {
+                val indent =
+                    generateSequence(suite?.parent, { it.parent })
+                        .map { "  " }
+                        .drop(1)
+                        .joinToString(separator = "")
+                println("$indent${suite?.displayName}")
+            }
+
             override fun afterTest(testDescriptor: TestDescriptor?, result: TestResult?) {
+                if (testDescriptor == null || result == null) {
+                    return
+                }
+                val indent =
+                    generateSequence(testDescriptor.parent, { it.parent })
+                        .map { "  " }
+                        .drop(1)
+                        .joinToString(separator = "")
+                val (sym, style) = when (result.resultType) {
+                    TestResult.ResultType.SUCCESS -> Pair("✓", StyledTextOutput.Style.Success)
+                    TestResult.ResultType.FAILURE -> Pair("✗", StyledTextOutput.Style.Failure)
+                    TestResult.ResultType.SKIPPED -> Pair("-", StyledTextOutput.Style.Normal)
+                    else -> Pair(" ", StyledTextOutput.Style.Normal)
+                }
+                val elapsed = durationToHumanString(Duration.ofMillis(result.endTime - result.startTime))
+                out.append(indent)
+                    .style(style)
+                    .append(sym)
+                    .style(StyledTextOutput.Style.Normal)
+                    .println(" ${testDescriptor.displayName} ($elapsed)")
+                result.exception?.let {
+                    formattedStackTrace(it, testDescriptor.className)
+                        .lines()
+                        .forEach { line ->
+                            out.style(StyledTextOutput.Style.Failure)
+                                .append(indent)
+                                .println(line)
+                        }
+                }
             }
         })
+    }
+
+    private fun formattedStackTrace(e: Throwable, className: String?): String {
+        truncateStackTrace(e, className)
+        e.cause?.let { truncateStackTrace(it) }
+        val sw = StringWriter()
+        e.printStackTrace(PrintWriter(sw))
+        return sw.toString()
+    }
+
+    private fun truncateStackTrace(e: Throwable, className: String? = null) {
+        val end = sequenceOf(*e.stackTrace)
+            .takeWhile { s -> !s.isNativeMethod }
+            .takeWhile { s -> className == null || s.className == className }
+            .count()
+
+        e.stackTrace = e.stackTrace.copyOfRange(0, end)
     }
 
     /** Return a string that contains the given lines surrounded by a box. */
@@ -107,15 +158,16 @@ class PrettyPrintTestPlugin @Inject constructor(
     /** Return the duration as a more human-readable string. e.g 120s => 2m */
     private fun durationToHumanString(duration: Duration): String {
         if (duration < Duration.ofSeconds(1)) {
-            return "0.${duration.toMillisPart()}s"
+            return "${duration.toMillisPart()}ms"
         }
+        val decimalSeconds = duration.toMillisPart() / 100;
         val seconds = duration.toSecondsPart()
         val minutes = duration.minusSeconds(seconds.toLong()).toMinutes()
         val display = mutableListOf<String>()
         if (minutes > 0) {
             display.add("${minutes}m")
         }
-        display.add("${seconds}s")
+        display.add("${seconds}.${decimalSeconds}s")
         return display.joinToString(" ")
     }
 }

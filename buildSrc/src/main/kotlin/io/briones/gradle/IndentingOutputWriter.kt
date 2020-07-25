@@ -2,21 +2,25 @@ package io.briones.gradle
 
 class IndentingOutputWriter(
     private var out: OutputWriter,
-    private val indent: String
+    private val indent: String,
+    private val base: Int = 0
 ) : OutputWriter {
     var indentLevel: Int = 0
     var start = true
 
+    private val totalIndent: Int
+        get() = indentLevel + base
+
     override fun append(value: String): OutputWriter {
         val lines = value.lineSequence().iterator()
         if (start) {
-            out = out.append(indent.repeat(indentLevel))
+            out = out.append(indent.repeat(totalIndent))
         }
         if (lines.hasNext()) {
             out.append(lines.next())
         }
         for (line in lines) {
-            out = out.println(indent.repeat(indentLevel)).append(line)
+            out = out.println(indent.repeat(totalIndent)).append(line)
         }
         start = false
         return this
@@ -25,20 +29,15 @@ class IndentingOutputWriter(
     override fun println(value: String): OutputWriter {
         val lines = value.lineSequence().iterator()
         if (start) {
-            out = out.append(indent.repeat(indentLevel))
+            out = out.append(indent.repeat(totalIndent))
         }
         if (lines.hasNext()) {
             out.println(lines.next())
         }
         for (line in lines) {
-            out = out.append(indent.repeat(indentLevel)).println(line)
+            out = out.append(indent.repeat(totalIndent)).println(line)
         }
         start = true
-        return this
-    }
-
-    fun indentLevel(level: Int): IndentingOutputWriter {
-        indentLevel = level
         return this
     }
 

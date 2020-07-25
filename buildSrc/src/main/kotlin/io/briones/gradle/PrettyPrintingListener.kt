@@ -11,7 +11,11 @@ import java.time.Duration
 class PrettyPrintingListener(out: StyledTextOutput) : TestListener {
     // Keep track of the index of each node so we know when we can print.
     private var testNodes = mutableListOf<Int>()
-    private var output = IndentingOutputWriter(GradleOutputWriter(out), "  ")
+    private var output = IndentingOutputWriter(
+        GradleOutputWriter(out),
+        indent = "  ",
+        base = 1
+    )
 
     override fun beforeTest(testDescriptor: TestDescriptor?) {
         testNodes[testNodes.lastIndex]++
@@ -21,6 +25,7 @@ class PrettyPrintingListener(out: StyledTextOutput) : TestListener {
     override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
         if (suite?.className != null) {
             testNodes.removeLast()
+            output.indentLevel = testNodes.size
         }
         if (result == null) {
             return
@@ -49,16 +54,12 @@ class PrettyPrintingListener(out: StyledTextOutput) : TestListener {
         if (suite?.className == null) {
             return
         }
-        val indent =
-            generateSequence(suite.parent, { it.parent })
-                .map { "  " }
-                .drop(1)
-                .joinToString(separator = "")
-        if (!suite.name.startsWith("Gradle")) {
-            println()
+        if (testNodes.isEmpty()) {
+            output.println()
         }
-        println("$indent${suite.name}")
+        output.normal().println("${suite.name}")
         testNodes.add(0)
+        output.indentLevel = testNodes.size
     }
 
     @ExperimentalStdlibApi
@@ -66,12 +67,6 @@ class PrettyPrintingListener(out: StyledTextOutput) : TestListener {
         if (testDescriptor == null || result == null) {
             return
         }
-        val indent =
-            generateSequence(testDescriptor.parent, { it.parent })
-                .map { "  " }
-                .drop(1)
-                .joinToString(separator = "")
-        output.append(indent)
         when (result.resultType) {
             TestResult.ResultType.SUCCESS -> output.success().append("✓").normal()
             TestResult.ResultType.FAILURE -> output.failure().append("✗")
@@ -84,9 +79,7 @@ class PrettyPrintingListener(out: StyledTextOutput) : TestListener {
             formattedStackTrace(it, testDescriptor.className)
                 .lines()
                 .forEach { line ->
-                    output.failure()
-                        .append(indent)
-                        .println(line)
+                    output.failure().println(line)
                 }
         }
     }

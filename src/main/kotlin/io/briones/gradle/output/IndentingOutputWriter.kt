@@ -60,4 +60,14 @@ class IndentingOutputWriter(
         out = out.plain()
         return this
     }
+
+    override fun bold(): OutputWriter {
+        out = out.bold()
+        return this
+    }
+
+    override fun flush(): OutputWriter {
+        out.flush()
+        return this
+    }
 }

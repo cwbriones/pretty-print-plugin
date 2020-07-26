@@ -13,10 +13,11 @@ class JColorOutputWriter(private val out: PrintStream) : OutputWriter {
     }
 
     private val styleMapping = mapOf(
-        Style.Failure to AnsiFormat(Attribute.BLUE_TEXT()),
+        Style.Failure to AnsiFormat(Attribute.RED_TEXT()),
         Style.Success to AnsiFormat(Attribute.GREEN_TEXT()),
         Style.Info to AnsiFormat(Attribute.YELLOW_TEXT()),
-        Style.Plain to AnsiFormat(Attribute.NONE())
+        Style.Plain to AnsiFormat(Attribute.NONE()),
+        Style.Bold to AnsiFormat(Attribute.BLACK_TEXT())
     )
 
     override fun failure(): OutputWriter = style(Style.Failure)
@@ -26,6 +27,8 @@ class JColorOutputWriter(private val out: PrintStream) : OutputWriter {
     override fun info(): OutputWriter = style(Style.Info)
 
     override fun plain(): OutputWriter = style(Style.Plain)
+
+    override fun bold(): OutputWriter = style(Style.Bold)
 
     private fun style(style: Style): OutputWriter {
         format = styleMapping[style] ?: throw IllegalStateException("Unhandled variant $style")
@@ -41,6 +44,11 @@ class JColorOutputWriter(private val out: PrintStream) : OutputWriter {
         // JColor doesn't handle screen-clearing directives
         out.print(ERASE_TO_END)
         out.println(format.format(value))
+        return this
+    }
+
+    override fun flush(): OutputWriter {
+        out.flush()
         return this
     }
 }

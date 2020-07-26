@@ -44,14 +44,14 @@ class TreePrintingListener(out: OutputWriter) : TestListener {
         output
             .println()
             .success()
-            .append("  ${result.successfulTestCount} passing")
+            .append("${result.successfulTestCount} passing")
             .plain()
             .println(" ($elapsed)")
             .applyingIf(result.failedTestCount > 0) {
-                it.failure().println("  ${result.failedTestCount} failing")
+                it.failure().println("${result.failedTestCount} failing")
             }
             .applyingIf(result.skippedTestCount > 0) {
-                it.info().println("  ${result.skippedTestCount} skipped")
+                it.info().println("${result.skippedTestCount} skipped")
             }
     }
 
@@ -70,7 +70,10 @@ class TreePrintingListener(out: OutputWriter) : TestListener {
             else -> output.plain().append(" ")
         }
         val elapsed = result.humanReadableDuration()
-        output.println(" ${testDescriptor.displayName} ($elapsed)")
+        output.bold()
+            .append(" ${testDescriptor.displayName}")
+            .plain()
+            .println(" ($elapsed)")
         result.exception?.let {
             val trace = formattedStackTrace(it, testDescriptor.className)
             output.failure().println(trace)

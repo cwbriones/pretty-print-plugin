@@ -4,5 +4,6 @@ enum class Style {
     Success,
     Failure,
     Info,
-    Plain
+    Plain,
+    Bold
 }

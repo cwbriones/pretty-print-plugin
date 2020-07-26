@@ -20,14 +20,14 @@ class ListPrintingListener(private var out: OutputWriter) : TestListener {
         out
             .println()
             .success()
-            .append("  ${result.successfulTestCount} passing")
+            .append("${result.successfulTestCount} passing")
             .plain()
             .println(" ($elapsed)")
             .applyingIf(result.failedTestCount > 0) {
-                it.failure().println("  ${result.failedTestCount} failing")
+                it.failure().println("${result.failedTestCount} failing")
             }
             .applyingIf(result.skippedTestCount > 0) {
-                it.info().println("  ${result.skippedTestCount} skipped")
+                it.info().println("${result.skippedTestCount} skipped")
             }
     }
 

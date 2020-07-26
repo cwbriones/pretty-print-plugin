@@ -1,17 +1,16 @@
 package io.briones.gradle.format
 
-import io.briones.gradle.output.GradleOutputWriter
 import io.briones.gradle.output.IndentingOutputWriter
+import io.briones.gradle.output.OutputWriter
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
-import org.gradle.internal.logging.text.StyledTextOutput
 
-class TreePrintingListener(out: StyledTextOutput) : TestListener {
+class TreePrintingListener(out: OutputWriter) : TestListener {
     // Keep track of the index of each node so we know when we can print.
     private var testNodes = mutableListOf<Int>()
     private var output = IndentingOutputWriter(
-        GradleOutputWriter(out),
+        out,
         indent = "  ",
         base = 1
     )

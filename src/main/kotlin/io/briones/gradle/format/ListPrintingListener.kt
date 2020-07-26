@@ -1,15 +1,11 @@
 package io.briones.gradle.format
 
-import io.briones.gradle.output.GradleOutputWriter
+import io.briones.gradle.output.OutputWriter
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
-import org.gradle.internal.logging.text.StyledTextOutput
 
-class ListPrintingListener(out: StyledTextOutput) : TestListener {
-    // Keep track of the index of each node so we know when we can print.
-    private var output = GradleOutputWriter(out)
-
+class ListPrintingListener(private var out: OutputWriter) : TestListener {
     override fun beforeSuite(suite: TestDescriptor?) {}
 
     override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
@@ -21,7 +17,7 @@ class ListPrintingListener(out: StyledTextOutput) : TestListener {
         }
         val elapsed = result.humanReadableDuration()
 
-        output
+        out
             .println()
             .success()
             .append("  ${result.successfulTestCount} passing")
@@ -42,17 +38,17 @@ class ListPrintingListener(out: StyledTextOutput) : TestListener {
             return
         }
         when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> output.success().append("✓").plain()
-            TestResult.ResultType.FAILURE -> output.failure().append("✗")
-            TestResult.ResultType.SKIPPED -> output.plain().append("-")
-            else -> output.plain().append(" ")
+            TestResult.ResultType.SUCCESS -> out.success().append("✓").plain()
+            TestResult.ResultType.FAILURE -> out.failure().append("✗")
+            TestResult.ResultType.SKIPPED -> out.plain().append("-")
+            else -> out.plain().append(" ")
         }
         val elapsed = result.humanReadableDuration()
         val displayName = buildName(testDescriptor)
-        output.println(" $displayName ($elapsed)")
+        out.println(" $displayName ($elapsed)")
         result.exception?.let {
             val trace = formattedStackTrace(it, testDescriptor.className)
-            output.failure().println(trace)
+            out.failure().println(trace)
         }
     }
 

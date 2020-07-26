@@ -1,15 +1,11 @@
 package io.briones.gradle.format
 
-import io.briones.gradle.output.GradleOutputWriter
+import io.briones.gradle.output.OutputWriter
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
-import org.gradle.internal.logging.text.StyledTextOutput
 
-class DotPrintingListener(out: StyledTextOutput) : TestListener {
-    // Keep track of the index of each node so we know when we can print.
-    private var output = GradleOutputWriter(out)
-
+class DotPrintingListener(private var out: OutputWriter) : TestListener {
     override fun beforeSuite(suite: TestDescriptor?) {}
 
     override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
@@ -20,7 +16,7 @@ class DotPrintingListener(out: StyledTextOutput) : TestListener {
             return
         }
         val elapsed = result.humanReadableDuration()
-        output
+        out
             .println()
             .success()
             .append("  ${result.successfulTestCount} passing")
@@ -41,10 +37,10 @@ class DotPrintingListener(out: StyledTextOutput) : TestListener {
             return
         }
         when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> output.plain().append(".").plain().flush()
-            TestResult.ResultType.FAILURE -> output.failure().append("X").flush()
-            TestResult.ResultType.SKIPPED -> output.info().append("s").flush()
-            else -> output.plain().flush()
+            TestResult.ResultType.SUCCESS -> out.plain().append(".").plain().flush()
+            TestResult.ResultType.FAILURE -> out.failure().append("X").flush()
+            TestResult.ResultType.SKIPPED -> out.info().append("s").flush()
+            else -> out.plain().flush()
         }
     }
 }

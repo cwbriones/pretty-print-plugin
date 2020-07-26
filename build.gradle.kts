@@ -21,6 +21,7 @@ kotlinDslPluginOptions {
 
 dependencies {
     implementation(gradleApi())
+    implementation(group = "com.diogonunes", name = "JColor", version = "5.0.0")
 }
 
 gradlePlugin {

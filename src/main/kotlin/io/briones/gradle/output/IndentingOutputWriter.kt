@@ -1,21 +1,35 @@
 package io.briones.gradle.output
 
+/**
+ * An output writer that applies indentation to the start of each line.
+ *
+ * The indentation amount can be modified after the writer has been created.
+ */
 class IndentingOutputWriter(
     private var inner: OutputWriter,
     private val indent: String,
     private val base: Int = 0
 ) : OutputWriter() {
     var indentLevel: Int = 0
-    var start = true
+        set(value) {
+            require(value >= 0) { "Indentation level is negative: $value" }
+            field = value
+        }
+
+    private var startOfLine = true
 
     private val totalIndent: Int
         get() = indentLevel + base
 
-    override fun style(style: Style): OutputWriter = inner.style(style)
+    override fun style(style: Style): IndentingOutputWriter {
+        inner = inner.style(style)
+        return this
+    }
 
-    override fun append(value: String): OutputWriter {
+    override fun append(value: String): IndentingOutputWriter {
+        // Handle any values passed in having newlines.
         val lines = value.lineSequence().iterator()
-        if (start) {
+        if (startOfLine) {
             inner = inner.append(indent.repeat(totalIndent))
         }
         if (lines.hasNext()) {
@@ -24,13 +38,14 @@ class IndentingOutputWriter(
         for (line in lines) {
             inner = inner.println(indent.repeat(totalIndent)).append(line)
         }
-        start = false
+        startOfLine = false
         return this
     }
 
-    override fun println(value: String): OutputWriter {
+    override fun println(value: String): IndentingOutputWriter {
+        // Handle any values passed in having newlines.
         val lines = value.lineSequence().iterator()
-        if (start) {
+        if (startOfLine) {
             inner = inner.append(indent.repeat(totalIndent))
         }
         if (lines.hasNext()) {
@@ -39,11 +54,11 @@ class IndentingOutputWriter(
         for (line in lines) {
             inner = inner.append(indent.repeat(totalIndent)).println(line)
         }
-        start = true
+        startOfLine = true
         return this
     }
 
-    override fun flush(): OutputWriter {
+    override fun flush(): IndentingOutputWriter {
         inner.flush()
         return this
     }

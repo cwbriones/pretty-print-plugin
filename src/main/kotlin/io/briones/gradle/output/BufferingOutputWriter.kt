@@ -1,6 +1,8 @@
 package io.briones.gradle.output
 
-// An Output Writer that buffers its contents.
+/**
+ * An Output Writer that buffers its contents.
+ */
 class BufferingOutputWriter(private var inner: OutputWriter) : OutputWriter() {
     private val buffer: MutableList<BufferElement> = mutableListOf(BufferElement(Style.Plain))
 
@@ -11,19 +13,18 @@ class BufferingOutputWriter(private var inner: OutputWriter) : OutputWriter() {
         return this
     }
 
-    override fun append(value: String): OutputWriter {
+    override fun append(value: String): BufferingOutputWriter {
         buffer.last().line.append(value)
         return this
     }
 
-    override fun println(value: String): OutputWriter {
+    override fun println(value: String): BufferingOutputWriter {
         buffer.last().line.append(value)
         flush()
         return this
     }
 
-    // Flush all output.
-    override fun flush(): OutputWriter {
+    override fun flush(): BufferingOutputWriter {
         for (elem in buffer) {
             when (elem.style) {
                 Style.Success -> inner.success()

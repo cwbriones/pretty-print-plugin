@@ -4,8 +4,11 @@ import com.diogonunes.jcolor.AnsiFormat
 import com.diogonunes.jcolor.Attribute
 import java.io.PrintStream
 
+/**
+ * An output writer that uses ANSI color codes for its styling via JColor.
+ */
 class JColorOutputWriter(private val out: PrintStream) : OutputWriter() {
-    var format: AnsiFormat = AnsiFormat(Attribute.NONE())
+    private var format: AnsiFormat = AnsiFormat(Attribute.NONE())
 
     companion object {
         private const val ESC = 27.toChar()
@@ -20,24 +23,24 @@ class JColorOutputWriter(private val out: PrintStream) : OutputWriter() {
         Style.Bold to AnsiFormat(Attribute.BLACK_TEXT())
     )
 
-    override fun style(style: Style): OutputWriter {
+    override fun style(style: Style): JColorOutputWriter {
         format = styleMapping[style] ?: throw IllegalStateException("Unhandled variant $style")
         return this
     }
 
-    override fun append(value: String): OutputWriter {
+    override fun append(value: String): JColorOutputWriter {
         out.print(format.format(value))
         return this
     }
 
-    override fun println(value: String): OutputWriter {
+    override fun println(value: String): JColorOutputWriter {
         // JColor doesn't handle screen-clearing directives
         out.print(ERASE_TO_END)
         out.println(format.format(value))
         return this
     }
 
-    override fun flush(): OutputWriter {
+    override fun flush(): JColorOutputWriter {
         out.flush()
         return this
     }

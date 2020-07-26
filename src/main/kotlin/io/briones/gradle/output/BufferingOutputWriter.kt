@@ -1,20 +1,10 @@
 package io.briones.gradle.output
 
 // An Output Writer that buffers its contents.
-class BufferingOutputWriter(private var inner: OutputWriter) : OutputWriter {
+class BufferingOutputWriter(private var inner: OutputWriter) : OutputWriter() {
     private val buffer: MutableList<BufferElement> = mutableListOf(BufferElement(Style.Plain))
 
-    override fun failure(): OutputWriter = style(Style.Failure)
-
-    override fun success(): OutputWriter = style(Style.Success)
-
-    override fun info(): OutputWriter = style(Style.Info)
-
-    override fun plain(): OutputWriter = style(Style.Plain)
-
-    override fun bold(): OutputWriter = style(Style.Bold)
-
-    private fun style(style: Style): BufferingOutputWriter {
+    override fun style(style: Style): BufferingOutputWriter {
         if (buffer.lastOrNull()?.style != style) {
             buffer.add(BufferElement(style))
         }

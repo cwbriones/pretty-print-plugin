@@ -4,7 +4,7 @@ import com.diogonunes.jcolor.AnsiFormat
 import com.diogonunes.jcolor.Attribute
 import java.io.PrintStream
 
-class JColorOutputWriter(private val out: PrintStream) : OutputWriter {
+class JColorOutputWriter(private val out: PrintStream) : OutputWriter() {
     var format: AnsiFormat = AnsiFormat(Attribute.NONE())
 
     companion object {
@@ -20,17 +20,7 @@ class JColorOutputWriter(private val out: PrintStream) : OutputWriter {
         Style.Bold to AnsiFormat(Attribute.BLACK_TEXT())
     )
 
-    override fun failure(): OutputWriter = style(Style.Failure)
-
-    override fun success(): OutputWriter = style(Style.Success)
-
-    override fun info(): OutputWriter = style(Style.Info)
-
-    override fun plain(): OutputWriter = style(Style.Plain)
-
-    override fun bold(): OutputWriter = style(Style.Bold)
-
-    private fun style(style: Style): OutputWriter {
+    override fun style(style: Style): OutputWriter {
         format = styleMapping[style] ?: throw IllegalStateException("Unhandled variant $style")
         return this
     }

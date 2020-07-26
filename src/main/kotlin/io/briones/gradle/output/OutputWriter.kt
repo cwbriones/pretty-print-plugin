@@ -1,20 +1,20 @@
 package io.briones.gradle.output
 
-interface OutputWriter {
+abstract class OutputWriter {
     // Apply the Failure style.
-    fun failure(): OutputWriter = this
+    fun failure(): OutputWriter = style(Style.Failure)
 
     // Apply the Success style.
-    fun success(): OutputWriter = this
+    fun success(): OutputWriter = style(Style.Success)
 
     // Apply the Info style.
-    fun info(): OutputWriter = this
+    fun info(): OutputWriter = style(Style.Info)
 
     // Apply the Plain style.
-    fun plain(): OutputWriter = this
+    fun plain(): OutputWriter = style(Style.Plain)
 
     // Apply the Bold style.
-    fun bold(): OutputWriter = this
+    fun bold(): OutputWriter = style(Style.Bold)
 
     // Run the given lambda if the condition is `true`.
     //
@@ -26,10 +26,15 @@ interface OutputWriter {
             this
         }
 
-    fun append(value: String): OutputWriter = this
+    // Apply the given style to this OutputWriter.
+    abstract fun style(style: Style): OutputWriter
 
-    fun println(value: String = ""): OutputWriter = this
+    // Append the given value to this OutputWriter.
+    open fun append(value: String): OutputWriter = this
 
-    fun flush(): OutputWriter = this
+    // Append the given value to this OutputWriter and write to a new line.
+    open fun println(value: String = ""): OutputWriter = this
+
+    open fun flush(): OutputWriter = this
 }
 

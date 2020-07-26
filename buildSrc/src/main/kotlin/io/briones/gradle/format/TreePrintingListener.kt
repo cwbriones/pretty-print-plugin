@@ -23,7 +23,7 @@ class TreePrintingListener(out: StyledTextOutput) : TestListener {
         if (testNodes.isEmpty()) {
             output.println()
         }
-        output.normal().println(suite.name)
+        output.normal().println(suite.displayName)
         testNodes.add(0)
         output.indentLevel = testNodes.size
     }

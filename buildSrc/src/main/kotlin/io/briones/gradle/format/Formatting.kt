@@ -28,10 +28,9 @@ fun TestResult.humanReadableDuration(): String {
     val display = StringBuilder()
     val minutes = duration.toMinutesPart()
     if (minutes > 0) {
-        display.append(minutes).append('m')
+        display.append(minutes).append('m').append(' ')
     }
-    val seconds = duration.toSecondsPart()
-    display.append(' ').append(seconds)
+    display.append(duration.toSecondsPart())
     if (minutes == 0) {
         val decimalSeconds = duration.toMillisPart() / 100
         display.append('.').append(decimalSeconds)

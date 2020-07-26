@@ -24,7 +24,7 @@ class DotPrintingListener(out: StyledTextOutput) : TestListener {
             .println()
             .success()
             .append("  ${result.successfulTestCount} passing")
-            .normal()
+            .plain()
             .println(" ($elapsed)")
             .applyingIf(result.failedTestCount > 0) {
                 it.failure().println("  ${result.failedTestCount} failing")
@@ -41,10 +41,10 @@ class DotPrintingListener(out: StyledTextOutput) : TestListener {
             return
         }
         when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> output.normal().append(".").normal().flush()
+            TestResult.ResultType.SUCCESS -> output.plain().append(".").plain().flush()
             TestResult.ResultType.FAILURE -> output.failure().append("X").flush()
             TestResult.ResultType.SKIPPED -> output.info().append("s").flush()
-            else -> output.normal().flush()
+            else -> output.plain().flush()
         }
     }
 }

@@ -18,7 +18,7 @@ class GradleOutputWriter(private var out: StyledTextOutput) : OutputWriter {
         return this
     }
 
-    override fun normal(): OutputWriter {
+    override fun plain(): OutputWriter {
         // Why can't I use "withStyle" ?
         out = out.style(StyledTextOutput.Style.Normal)
         return this

@@ -25,7 +25,7 @@ class ListPrintingListener(out: StyledTextOutput) : TestListener {
             .println()
             .success()
             .append("  ${result.successfulTestCount} passing")
-            .normal()
+            .plain()
             .println(" ($elapsed)")
             .applyingIf(result.failedTestCount > 0) {
                 it.failure().println("  ${result.failedTestCount} failing")
@@ -42,10 +42,10 @@ class ListPrintingListener(out: StyledTextOutput) : TestListener {
             return
         }
         when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> output.success().append("✓").normal()
+            TestResult.ResultType.SUCCESS -> output.success().append("✓").plain()
             TestResult.ResultType.FAILURE -> output.failure().append("✗")
-            TestResult.ResultType.SKIPPED -> output.normal().append("-")
-            else -> output.normal().append(" ")
+            TestResult.ResultType.SKIPPED -> output.plain().append("-")
+            else -> output.plain().append(" ")
         }
         val elapsed = result.humanReadableDuration()
         val displayName = buildName(testDescriptor)

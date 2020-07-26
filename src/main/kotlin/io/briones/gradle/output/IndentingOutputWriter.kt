@@ -56,8 +56,8 @@ class IndentingOutputWriter(
         return this
     }
 
-    override fun normal(): OutputWriter {
-        out = out.normal()
+    override fun plain(): OutputWriter {
+        out = out.plain()
         return this
     }
 }

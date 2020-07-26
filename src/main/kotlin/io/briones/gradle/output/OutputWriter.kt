@@ -28,7 +28,7 @@ interface OutputWriter {
         return this
     }
 
-    fun normal(): OutputWriter {
+    fun plain(): OutputWriter {
         return this
     }
 

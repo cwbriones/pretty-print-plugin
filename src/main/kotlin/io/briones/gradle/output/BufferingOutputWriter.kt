@@ -10,7 +10,7 @@ class BufferingOutputWriter(private var inner: OutputWriter) : OutputWriter {
 
     override fun info(): OutputWriter = style(Style.Info)
 
-    override fun normal(): OutputWriter = style(Style.Plain)
+    override fun plain(): OutputWriter = style(Style.Plain)
 
     private fun style(style: Style): BufferingOutputWriter {
         if (buffer.lastOrNull()?.style != style) {
@@ -37,7 +37,7 @@ class BufferingOutputWriter(private var inner: OutputWriter) : OutputWriter {
                 Style.Success -> inner.success()
                 Style.Failure -> inner.failure()
                 Style.Info -> inner.info()
-                Style.Plain -> inner.normal()
+                Style.Plain -> inner.plain()
             }.append(elem.line.toString())
         }
         val style = buffer.last().style

@@ -23,7 +23,7 @@ class TreePrintingListener(out: StyledTextOutput) : TestListener {
         if (testNodes.isEmpty()) {
             output.println()
         }
-        output.normal().println(suite.displayName)
+        output.plain().println(suite.displayName)
         testNodes.add(0)
         output.indentLevel = testNodes.size
     }
@@ -46,7 +46,7 @@ class TreePrintingListener(out: StyledTextOutput) : TestListener {
             .println()
             .success()
             .append("  ${result.successfulTestCount} passing")
-            .normal()
+            .plain()
             .println(" ($elapsed)")
             .applyingIf(result.failedTestCount > 0) {
                 it.failure().println("  ${result.failedTestCount} failing")
@@ -65,10 +65,10 @@ class TreePrintingListener(out: StyledTextOutput) : TestListener {
             return
         }
         when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> output.success().append("✓").normal()
+            TestResult.ResultType.SUCCESS -> output.success().append("✓").plain()
             TestResult.ResultType.FAILURE -> output.failure().append("✗")
-            TestResult.ResultType.SKIPPED -> output.normal().append("-")
-            else -> output.normal().append(" ")
+            TestResult.ResultType.SKIPPED -> output.plain().append("-")
+            else -> output.plain().append(" ")
         }
         val elapsed = result.humanReadableDuration()
         output.println(" ${testDescriptor.displayName} ($elapsed)")

@@ -1,5 +1,6 @@
 package io.briones.gradle
 
+import io.briones.gradle.format.TreePrintingListener
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
@@ -17,7 +18,7 @@ class PrettyPrintTestPlugin @Inject constructor(
             testLogging {
                 setEvents(listOf<TestLogEvent>())
             }
-            addTestListener(PrettyPrintingListener(out))
+            addTestListener(TreePrintingListener(out))
         }
     }
 }

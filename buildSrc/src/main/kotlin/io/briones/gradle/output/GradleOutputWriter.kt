@@ -1,4 +1,4 @@
-package io.briones.gradle
+package io.briones.gradle.output
 
 import org.gradle.internal.logging.text.StyledTextOutput
 
@@ -31,6 +31,11 @@ class GradleOutputWriter(private var out: StyledTextOutput) : OutputWriter {
 
     override fun println(value: String): OutputWriter {
         out = out.println(value)
+        return this
+    }
+
+    // Flush all output.
+    override fun flush(): OutputWriter {
         return this
     }
 }

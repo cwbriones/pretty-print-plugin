@@ -1,4 +1,4 @@
-package io.briones.gradle
+package io.briones.gradle.output
 
 class IndentingOutputWriter(
     private var out: OutputWriter,
@@ -57,7 +57,6 @@ class IndentingOutputWriter(
     }
 
     override fun normal(): OutputWriter {
-        // Why can't I use "withStyle" ?
         out = out.normal()
         return this
     }

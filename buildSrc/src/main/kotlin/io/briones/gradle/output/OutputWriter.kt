@@ -1,4 +1,4 @@
-package io.briones.gradle
+package io.briones.gradle.output
 
 interface OutputWriter {
     fun failure(): OutputWriter {
@@ -29,6 +29,10 @@ interface OutputWriter {
     }
 
     fun normal(): OutputWriter {
+        return this
+    }
+
+    fun flush(): OutputWriter {
         return this
     }
 }

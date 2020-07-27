@@ -24,6 +24,12 @@ dependencies {
     implementation(group = "com.diogonunes", name = "JColor", version = "5.0.0")
 }
 
+publishing {
+    repositories {
+        mavenLocal()
+    }
+}
+
 gradlePlugin {
     plugins {
         create("prettyPrintTestPlugin") {

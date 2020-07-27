@@ -8,6 +8,7 @@ import org.gradle.api.tasks.testing.TestResult
 
 class DotPrintingListener(out: OutputWriter) : TestListener {
     private var out = IndentingOutputWriter(out, indent = "  ", base = 1)
+    private var lineWidth = 0
 
     override fun beforeSuite(suite: TestDescriptor?) {}
 
@@ -40,12 +41,21 @@ class DotPrintingListener(out: OutputWriter) : TestListener {
         if (testDescriptor == null || result == null) {
             return
         }
+        if (lineWidth == MAX_WIDTH) {
+            out.println()
+            lineWidth = 0
+        }
         when (result.resultType) {
             TestResult.ResultType.SUCCESS -> out.bold().append(".").plain().flush()
             TestResult.ResultType.FAILURE -> out.failure().append("X").flush()
             TestResult.ResultType.SKIPPED -> out.info().append("s").flush()
             else -> out.plain().flush()
         }
+        lineWidth++
+    }
+
+    companion object {
+        private const val MAX_WIDTH = 80
     }
 }
 

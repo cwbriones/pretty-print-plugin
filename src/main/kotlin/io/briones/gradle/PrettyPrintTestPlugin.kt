@@ -1,27 +1,55 @@
 package io.briones.gradle
 
-import io.briones.gradle.format.TreePrintingListener
 import io.briones.gradle.output.JColorOutputWriter
 import io.briones.gradle.output.OutputWriter
+import io.briones.gradle.output.UnstyledOutputWriter
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.withType
 
 @Suppress("unused")
 class PrettyPrintTestPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val out = createOutputFactory()
-        project.tasks.withType<Test>().configureEach {
-            testLogging {
-                setEvents(listOf<TestLogEvent>())
+        val ext = project.extensions.create<PrettyPrintTestExtension>("prettyPrint")
+
+        project.afterEvaluate {
+            applyOverrides(project, ext)
+            val out = createOutputFactory(ext)
+            val listener = ext.format.listener(out)
+            project.tasks.withType<Test>().configureEach {
+                testLogging {
+                    setEvents(listOf<TestLogEvent>())
+                }
+                addTestListener(listener)
             }
-            addTestListener(TreePrintingListener(out))
         }
     }
 
-    private fun createOutputFactory(): OutputWriter =
-        JColorOutputWriter(System.out)
+    private fun applyOverrides(project: Project, ext: PrettyPrintTestExtension) {
+        withProperty(project, "prettyPrint.color") {
+            ext.color = it == "true"
+        }
+        withProperty(project, "prettyPrint.format") {
+            ext.formatName = it
+        }
+    }
+
+    private inline fun withProperty(
+        project: Project,
+        name: String,
+        apply: (String) -> Unit
+    ) {
+        val prop = System.getProperty(name) ?: (project.properties[name] as String?)
+        if (prop != null) {
+            apply(prop)
+        }
+    }
+
+    private fun createOutputFactory(ext: PrettyPrintTestExtension): OutputWriter {
+        return if (ext.color) JColorOutputWriter(System.out) else UnstyledOutputWriter(System.out)
+    }
 }
 

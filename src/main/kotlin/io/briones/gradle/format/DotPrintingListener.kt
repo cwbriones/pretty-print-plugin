@@ -10,7 +10,7 @@ class DotPrintingListener(out: OutputWriter) : TestListener {
     private var out = IndentingOutputWriter(out, indent = "  ", base = 1)
     private var lineWidth = 0
 
-    override fun beforeSuite(suite: TestDescriptor?) {}
+    override fun beforeSuite(suite: TestDescriptor?) { /* unused */ }
 
     override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
         if (result == null) {
@@ -35,7 +35,7 @@ class DotPrintingListener(out: OutputWriter) : TestListener {
             }
     }
 
-    override fun beforeTest(testDescriptor: TestDescriptor?) {}
+    override fun beforeTest(testDescriptor: TestDescriptor?) { /* unused */ }
 
     override fun afterTest(testDescriptor: TestDescriptor?, result: TestResult?) {
         if (testDescriptor == null || result == null) {

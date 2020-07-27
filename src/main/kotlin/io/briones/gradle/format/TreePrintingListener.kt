@@ -80,4 +80,3 @@ class TreePrintingListener(out: OutputWriter) : TestListener {
         }
     }
 }
-

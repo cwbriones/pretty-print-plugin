@@ -2,6 +2,8 @@ plugins {
     java
     `kotlin-dsl`
     `maven-publish`
+
+    id("io.gitlab.arturbosch.detekt") version "1.10.0"
 }
 
 group = "io.briones.gradle"
@@ -9,6 +11,12 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    jcenter {
+        content {
+            // detekt needs 'kotlinx-html' for the html report
+            includeGroup("org.jetbrains.kotlinx")
+        }
+    }
 }
 
 java {

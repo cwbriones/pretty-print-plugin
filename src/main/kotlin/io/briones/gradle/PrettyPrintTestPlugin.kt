@@ -43,9 +43,7 @@ class PrettyPrintTestPlugin : Plugin<Project> {
         apply: (String) -> Unit
     ) {
         val prop = System.getProperty(name) ?: (project.properties[name] as String?)
-        if (prop != null) {
-            apply(prop)
-        }
+        prop?.let(apply)
     }
 
     private fun createOutputFactory(ext: PrettyPrintTestExtension): OutputWriter {

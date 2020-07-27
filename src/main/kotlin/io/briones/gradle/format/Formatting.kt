@@ -32,7 +32,7 @@ fun TestResult.humanReadableDuration(): String {
     }
     display.append(duration.toSecondsPart())
     if (minutes == 0) {
-        val decimalSeconds = duration.toMillisPart() / 100
+        val decimalSeconds = duration.toMillisPart() / Duration.ofSeconds(1).toMillis()
         display.append('.').append(decimalSeconds)
     }
     display.append('s')
@@ -48,7 +48,7 @@ fun formattedStackTrace(e: Throwable, className: String?): String {
 }
 
 private fun truncateStackTrace(e: Throwable, className: String? = null) {
-    val end = sequenceOf(*e.stackTrace)
+    val end = e.stackTrace
         .takeWhile { s -> !s.isNativeMethod }
         .takeWhile { s -> className == null || s.className == className }
         .count()

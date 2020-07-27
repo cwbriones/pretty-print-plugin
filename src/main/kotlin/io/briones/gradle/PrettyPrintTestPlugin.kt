@@ -18,7 +18,7 @@ class PrettyPrintTestPlugin : Plugin<Project> {
         project.afterEvaluate {
             applyOverrides(project, ext)
             val out = createOutputFactory(ext)
-            val listener = ext.format.listener(out)
+            val listener = ext.format.listener(out, ext)
             project.tasks.withType<Test>().configureEach {
                 testLogging {
                     setEvents(listOf<TestLogEvent>())
@@ -34,6 +34,9 @@ class PrettyPrintTestPlugin : Plugin<Project> {
         }
         withProperty(project, "prettyPrint.format") {
             ext.formatName = it
+        }
+        withProperty(project, "prettyPrint.inlineExceptions") {
+            ext.inlineExceptions = it == "true"
         }
     }
 

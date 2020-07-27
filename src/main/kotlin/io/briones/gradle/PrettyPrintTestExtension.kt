@@ -7,6 +7,7 @@ import java.lang.IllegalArgumentException
 open class PrettyPrintTestExtension {
     var color: Boolean = true
     var format: Format = Format.Mocha
+    var inlineExceptions: Boolean = false
 
     var formatName: String
         get() {

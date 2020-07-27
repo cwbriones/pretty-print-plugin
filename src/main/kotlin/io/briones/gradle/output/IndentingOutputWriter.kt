@@ -58,6 +58,14 @@ class IndentingOutputWriter(
         return this
     }
 
+    /* Temporarily apply an extra level of indentation within the given block. */
+    fun indented(f: IndentingOutputWriter.() -> Unit): IndentingOutputWriter {
+        indentLevel++
+        f(this)
+        indentLevel--
+        return this
+    }
+
     override fun flush(): IndentingOutputWriter {
         inner.flush()
         return this

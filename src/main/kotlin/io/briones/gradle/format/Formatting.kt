@@ -1,5 +1,6 @@
 package io.briones.gradle.format
 
+import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -37,6 +38,22 @@ fun TestResult.humanReadableDuration(): String {
     }
     display.append('s')
     return display.toString()
+}
+
+/**
+ * Return the fully-qualified display name of this test descriptor
+ *
+ * This prepends the display name of all enclosing suites, e.g.
+ *
+ * `MySuite > WhenTheresAnEnclosingClass > itsIncludedInTheName()`
+ */
+fun TestDescriptor.fqDisplayName(separator: String = " > "): String {
+    return generateSequence(this) { it.parent }
+        .filter { it.className != null }
+        .map { it.displayName }
+        .toList()
+        .reversed()
+        .joinToString(separator = separator)
 }
 
 fun formattedStackTrace(e: Throwable, className: String?): String {

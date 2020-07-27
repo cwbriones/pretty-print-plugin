@@ -21,7 +21,8 @@ open class PrettyPrintTestExtension {
             try {
                 format = Format.valueOf(normalized)
             } catch (e: IllegalArgumentException) {
-                throw IllegalArgumentException("Invalid format '$value'")
+                val formats = Format.values().joinToString { "'${it.name.toLowerCase()}'" }
+                throw IllegalArgumentException("Invalid format '$value', valid formats: $formats")
             }
         }
 }

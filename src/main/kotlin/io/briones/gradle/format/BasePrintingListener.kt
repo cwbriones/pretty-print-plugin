@@ -40,20 +40,36 @@ abstract class BasePrintingListener(
         }
     }
 
-    abstract fun afterTestRun(testDescriptor: TestDescriptor, result: TestResult)
-
-    override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
-        if (result == null) {
-            return
+    override fun beforeSuite(suite: TestDescriptor?) {
+        if (suite != null && suite.parent == null) {
+            out.println()
         }
-        if (suite?.parent != null) {
-            return
+        if (suite?.className != null) {
+            beforeSuiteRun(suite)
         }
-        displayFailures()
-        summarize(result)
     }
 
-    override fun beforeSuite(testDescriptor: TestDescriptor?) { /* unused */ }
+    override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
+        if (result == null || suite == null) {
+            return
+        }
+        if (suite.className != null) {
+            afterSuiteRun(suite, result)
+        }
+        if (suite.parent == null) {
+            displayFailures()
+            summarize(result)
+        }
+    }
+
+    /** Non-null version of [TestListener.afterTest] */
+    abstract fun afterTestRun(testDescriptor: TestDescriptor, result: TestResult)
+
+    /** Non-null version of [TestListener.beforeSuite] */
+    open fun beforeSuiteRun(suite: TestDescriptor) { /* unused */ }
+
+    /** Non-null version of [TestListener.afterSuite] */
+    open fun afterSuiteRun(suite: TestDescriptor, result: TestResult) { /* unused */ }
 
     private fun summarize(result: TestResult) {
         val elapsed = result.humanReadableDuration()

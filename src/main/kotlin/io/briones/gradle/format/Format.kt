@@ -12,6 +12,6 @@ enum class Format {
     internal fun listener(out: OutputWriter, ext: PrettyPrintTestExtension): TestListener = when (this) {
         Dot -> DotPrintingListener(out)
         List -> ListPrintingListener(out, ext.inlineExceptions)
-        Mocha -> TreePrintingListener(out)
+        Mocha -> TreePrintingListener(out, ext.inlineExceptions)
     }
 }

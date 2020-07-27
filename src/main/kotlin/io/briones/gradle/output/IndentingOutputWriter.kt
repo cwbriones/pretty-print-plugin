@@ -20,7 +20,7 @@ class IndentingOutputWriter(
     }
 
     fun decreaseIndentation() {
-        require(indentLevel >= 0) { "Indentation level is already 0" }
+        require(indentLevel > 0) { "Indentation level is already 0" }
         indentLevel--
     }
 

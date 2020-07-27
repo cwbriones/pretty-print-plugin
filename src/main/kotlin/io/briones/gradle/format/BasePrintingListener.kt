@@ -2,6 +2,10 @@ package io.briones.gradle.format
 
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.OutputWriter
+import io.briones.gradle.output.failure
+import io.briones.gradle.output.info
+import io.briones.gradle.output.plain
+import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
@@ -19,6 +23,24 @@ abstract class BasePrintingListener(
     private var failures = mutableListOf<TestFailure>()
 
     override fun beforeTest(testDescriptor: TestDescriptor?) { /* unused */ }
+
+    override fun afterTest(testDescriptor: TestDescriptor?, result: TestResult?) {
+        if (testDescriptor == null || result == null) {
+            return
+        }
+        afterTestRun(testDescriptor, result)
+        if (result.resultType == TestResult.ResultType.FAILURE) {
+            val e = result.exception ?: throw IllegalStateException("Failed test must have exception")
+            if (displayFailuresInline) {
+                val trace = formattedStackTrace(e, testDescriptor.className)
+                out.failure().indented { println(trace) }
+                return
+            }
+            failures.add(TestFailure(testDescriptor, e))
+        }
+    }
+
+    abstract fun afterTestRun(testDescriptor: TestDescriptor, result: TestResult)
 
     override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
         if (result == null) {
@@ -63,27 +85,8 @@ abstract class BasePrintingListener(
                 .println()
                 .println("${i + 1}) $fullName")
                 .println()
-            out.indented { println(trace) }
+                .indented { println(trace) }
         }
     }
-
-    override fun afterTest(testDescriptor: TestDescriptor?, result: TestResult?) {
-        if (testDescriptor == null || result == null) {
-            return
-        }
-        afterTestRun(testDescriptor, result)
-        if (result.resultType == TestResult.ResultType.FAILURE) {
-            val e = result.exception ?: throw IllegalStateException("Failed test must have exception")
-            if (displayFailuresInline) {
-                val trace = formattedStackTrace(e, testDescriptor.className)
-                out.failure()
-                out.indented { println(trace) }
-                return
-            }
-            failures.add(TestFailure(testDescriptor, e))
-        }
-    }
-
-    abstract fun afterTestRun(testDescriptor: TestDescriptor, result: TestResult)
 }
 

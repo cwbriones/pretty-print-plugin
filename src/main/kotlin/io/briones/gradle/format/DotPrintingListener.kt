@@ -1,6 +1,10 @@
 package io.briones.gradle.format
 
 import io.briones.gradle.output.OutputWriter
+import io.briones.gradle.output.bold
+import io.briones.gradle.output.failure
+import io.briones.gradle.output.info
+import io.briones.gradle.output.plain
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 

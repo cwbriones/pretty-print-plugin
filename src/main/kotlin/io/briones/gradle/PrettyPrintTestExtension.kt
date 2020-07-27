@@ -1,7 +1,6 @@
 package io.briones.gradle
 
 import io.briones.gradle.format.Format
-import org.gradle.api.Project
 import java.lang.IllegalArgumentException
 
 open class PrettyPrintTestExtension {

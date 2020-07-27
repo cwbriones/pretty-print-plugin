@@ -10,16 +10,19 @@ class IndentingOutputWriter(
     private val indent: String,
     private val base: Int = 0
 ) : OutputWriter() {
-    var indentLevel: Int = 0
-        set(value) {
-            require(value >= 0) { "Indentation level is negative: $value" }
-            field = value
-        }
-
     private var startOfLine = true
-
+    private var indentLevel: Int = 0
     private val totalIndent: Int
         get() = indentLevel + base
+
+    fun increaseIndentation() {
+        indentLevel++
+    }
+
+    fun decreaseIndentation() {
+        require(indentLevel >= 0) { "Indentation level is already 0" }
+        indentLevel--
+    }
 
     override fun style(style: Style): IndentingOutputWriter {
         inner = inner.style(style)

@@ -1,21 +1,6 @@
 package io.briones.gradle.output
 
 abstract class OutputWriter {
-    /** Apply the Failure style. */
-    fun failure(): OutputWriter = style(Style.Failure)
-
-    /** Apply the Success style. */
-    fun success(): OutputWriter = style(Style.Success)
-
-    /** Apply the Info style. */
-    fun info(): OutputWriter = style(Style.Info)
-
-    /** Apply the Plain style. */
-    fun plain(): OutputWriter = style(Style.Plain)
-
-    /** Apply the Bold style. */
-    fun bold(): OutputWriter = style(Style.Bold)
-
     /**
      * Run the given lambda if the condition is `true`.
      * This can be useful for applying conditional output while chaining.
@@ -44,3 +29,32 @@ abstract class OutputWriter {
     open fun flush(): OutputWriter = this
 }
 
+/** Apply the Failure style. */
+fun <T: OutputWriter> T.failure(): T {
+    style(Style.Failure)
+    return this
+}
+
+/** Apply the Success style. */
+fun <T: OutputWriter> T.success(): T {
+    style(Style.Success)
+    return this
+}
+
+/** Apply the Info style. */
+fun <T: OutputWriter> T.info(): T {
+    style(Style.Info)
+    return this
+}
+
+/** Apply the Plain style. */
+fun <T: OutputWriter> T.plain(): OutputWriter {
+    style(Style.Plain)
+    return this
+}
+
+/** Apply the Bold style. */
+fun <T: OutputWriter> T.bold(): OutputWriter {
+    style(Style.Bold)
+    return this
+}

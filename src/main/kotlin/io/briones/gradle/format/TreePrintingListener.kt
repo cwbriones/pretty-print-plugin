@@ -2,6 +2,11 @@ package io.briones.gradle.format
 
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.OutputWriter
+import io.briones.gradle.output.bold
+import io.briones.gradle.output.failure
+import io.briones.gradle.output.info
+import io.briones.gradle.output.plain
+import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
@@ -24,14 +29,14 @@ class TreePrintingListener(out: OutputWriter) : TestListener {
         }
         output.plain().println(suite.displayName)
         testNodes.add(0)
-        output.indentLevel = testNodes.size
+        output.increaseIndentation()
     }
 
     @ExperimentalStdlibApi
     override fun afterSuite(suite: TestDescriptor?, result: TestResult?) {
         if (suite?.className != null) {
             testNodes.removeLast()
-            output.indentLevel = testNodes.size
+            output.decreaseIndentation()
         }
         if (result == null) {
             return

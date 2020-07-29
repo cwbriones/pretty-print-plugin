@@ -73,18 +73,34 @@ abstract class BasePrintingListener(
 
     private fun summarize(result: TestResult) {
         val elapsed = result.humanReadableDuration()
+        val allPassed = result.failedTestCount == 0L
+        val padding = listOf(
+            result.successfulTestCount,
+            result.failedTestCount,
+            result.skippedTestCount
+        ).max().toString().length
+        // account for the leading checkmark.
+        val skipPadding = if (allPassed) padding + 2 else padding
+
+        val successCount = result.successfulTestCount.toString().padStart(padding)
+        val skippedCount = result.skippedTestCount.toString().padStart(skipPadding)
+        val failedCount = result.failedTestCount.toString().padStart(padding)
+
         out
             .println()
             .println()
             .success()
-            .append("${result.successfulTestCount} passing")
+            .applyingIf(allPassed) {
+                it.append("✓ ")
+            }
+            .append("$successCount passing")
             .plain()
             .println(" ($elapsed)")
-            .applyingIf(result.failedTestCount > 0) {
-                it.failure().println("${result.failedTestCount} failing")
+            .applyingIf(!allPassed) {
+                it.failure().println("$failedCount failing")
             }
             .applyingIf(result.skippedTestCount > 0) {
-                it.info().println("${result.skippedTestCount} skipped")
+                it.info().println("$skippedCount skipped")
             }
     }
 

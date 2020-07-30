@@ -12,8 +12,10 @@ class IndentingOutputWriter(
 ) : OutputWriter() {
     private var startOfLine = true
     private var indentLevel: Int = 0
-    private val totalIndent: Int
+    private val totalIndentLevel: Int
         get() = indentLevel + base
+
+    private fun totalIndent(): String = indent.repeat(totalIndentLevel)
 
     fun increaseIndentation() {
         indentLevel++
@@ -30,18 +32,24 @@ class IndentingOutputWriter(
     }
 
     override fun append(value: String): IndentingOutputWriter {
+        if (value == "") return this
         // Handle any values passed in having newlines.
         val lines = value.lineSequence().iterator()
-        if (startOfLine) {
-            inner = inner.append(indent.repeat(totalIndent))
+        val first = lines.next()
+        if (startOfLine && first != "") {
+            inner = inner.append(totalIndent())
         }
-        if (lines.hasNext()) {
-            inner.append(lines.next())
+        inner.append(first)
+        startOfLine = first == ""
+        while (lines.hasNext()) {
+            val line = lines.next()
+            inner.println()
+            if (line != "") {
+                inner.append(totalIndent())
+            }
+            inner.append(line)
+            startOfLine = line == ""
         }
-        for (line in lines) {
-            inner = inner.println(indent.repeat(totalIndent)).append(line)
-        }
-        startOfLine = false
         return this
     }
 
@@ -49,13 +57,13 @@ class IndentingOutputWriter(
         // Handle any values passed in having newlines.
         val lines = value.lineSequence().iterator()
         if (startOfLine) {
-            inner = inner.append(indent.repeat(totalIndent))
+            inner = inner.append(totalIndent())
         }
         if (lines.hasNext()) {
             inner.println(lines.next())
         }
         for (line in lines) {
-            inner = inner.append(indent.repeat(totalIndent)).println(line)
+            inner = inner.append(totalIndent()).println(line)
         }
         startOfLine = true
         return this

@@ -30,6 +30,15 @@ kotlinDslPluginOptions {
 dependencies {
     implementation(gradleApi())
     implementation(group = "com.diogonunes", name = "JColor", version = "5.0.0")
+
+    val truthVersion = "1.0.1"
+    val junitVersion = "5.6.2"
+
+    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = junitVersion)
+    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = junitVersion)
+    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-params", version = junitVersion)
+    testImplementation(group = "com.google.truth", name = "truth", version = truthVersion)
+    testImplementation(group = "com.google.truth.extensions", name = "truth-java8-extension", version = truthVersion)
 }
 
 publishing {
@@ -46,3 +55,8 @@ gradlePlugin {
         }
     }
 }
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+

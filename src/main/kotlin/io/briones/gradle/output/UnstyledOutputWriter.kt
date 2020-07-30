@@ -24,4 +24,3 @@ class UnstyledOutputWriter(private val out: PrintStream) : OutputWriter() {
         return this
     }
 }
-

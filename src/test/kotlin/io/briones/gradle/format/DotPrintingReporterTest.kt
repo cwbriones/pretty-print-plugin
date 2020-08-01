@@ -5,12 +5,12 @@ import io.briones.gradle.format.test.testContainer
 import io.briones.gradle.output.test.captureOutput
 import org.junit.jupiter.api.Test
 
-class DotPrintingListenerTest {
+class DotPrintingReporterTest {
     @Test
     fun `it renders correctly when all tests passed`() {
         val captured = captureOutput {
-            val dotListener = DotPrintingListener(it)
-            testContainer(dotListener) {
+            val dotReporter = newDotPrintingReporter(80)
+            testContainer(it, dotReporter) {
                 suite("Top level suite") {
                     testPassed("Test One")
                     testPassed("Test Two")
@@ -19,19 +19,15 @@ class DotPrintingListenerTest {
             }
         }
         assertThat(captured).isEqualTo("""
-        |  
-        |  ...
-        |  
-        |  ✓ 3 passing (-150ms)
-        |
-        """.trimMargin())
+        ...
+        """.trimIndent())
     }
 
     @Test
     fun `it renders correctly some tests failed`() {
         val captured = captureOutput {
-            val dotListener = DotPrintingListener(it)
-            testContainer(dotListener) {
+            val dotReporter = newDotPrintingReporter(80)
+            testContainer(it, dotReporter) {
                 suite("Top level suite") {
                     testPassed("Test One")
                     testSkipped("Test Two")
@@ -41,18 +37,7 @@ class DotPrintingListenerTest {
             }
         }
         assertThat("""
-        |  
-        |  .s.X
-        |  
-        |  1) Top level suite > Test Four
-        |  
-        |    java.lang.RuntimeException: boom
-        |  
-        |  
-        |  2 passing (-200ms)
-        |  1 failing
-        |  1 skipped
-        |
-        """.trimMargin()).isEqualTo(captured)
+        .s.X
+        """.trimIndent()).isEqualTo(captured)
     }
 }

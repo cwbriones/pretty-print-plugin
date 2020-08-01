@@ -1,5 +1,9 @@
 package io.briones.gradle
 
+import io.briones.gradle.format.ErrorPrintingReporter
+import io.briones.gradle.format.PrettyPrintingListener
+import io.briones.gradle.format.SummarizingReporter
+import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.JColorOutputWriter
 import io.briones.gradle.output.OutputWriter
 import io.briones.gradle.output.UnstyledOutputWriter
@@ -18,7 +22,17 @@ class PrettyPrintTestPlugin : Plugin<Project> {
         project.afterEvaluate {
             applyOverrides(project, ext)
             val out = createOutputFactory(ext)
-            val listener = ext.format.listener(out, ext)
+            val reporter = ext.format.listener()
+            val inlineExceptions = ext.inlineExceptions && ext.format.supportsInlineExceptions()
+            val reporters = listOf(
+                reporter,
+                ErrorPrintingReporter(inlineExceptions),
+                SummarizingReporter()
+            )
+            val listener = PrettyPrintingListener(
+                IndentingOutputWriter(out, indent = "  ", base = 1),
+                reporters
+            )
             project.tasks.withType<Test>().configureEach {
                 testLogging {
                     setEvents(listOf<TestLogEvent>())

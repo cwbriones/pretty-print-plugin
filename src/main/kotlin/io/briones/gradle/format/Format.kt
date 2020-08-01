@@ -1,17 +1,21 @@
 package io.briones.gradle.format
 
-import io.briones.gradle.PrettyPrintTestExtension
-import io.briones.gradle.output.OutputWriter
-import org.gradle.api.tasks.testing.TestListener
+import io.briones.gradle.output.IndentingOutputWriter
 
 enum class Format {
     Dot,
     List,
     Mocha;
 
-    internal fun listener(out: OutputWriter, ext: PrettyPrintTestExtension): TestListener = when (this) {
-        Dot -> DotPrintingListener(out)
-        List -> ListPrintingListener(out, ext.inlineExceptions)
-        Mocha -> TreePrintingListener(out, ext.inlineExceptions)
+    internal fun listener(): TestReporter<IndentingOutputWriter> = when (this) {
+        Dot -> newDotPrintingReporter(80)
+        List -> newListPrintingReporter()
+        Mocha -> TreePrintingReporter()
+    }
+
+    fun supportsInlineExceptions(): Boolean = when (this) {
+        List -> true
+        Mocha -> true
+        else -> false
     }
 }

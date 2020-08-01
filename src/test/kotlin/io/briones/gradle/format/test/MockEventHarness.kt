@@ -1,5 +1,7 @@
 package io.briones.gradle.format.test
 
+import io.briones.gradle.format.TestReporter
+import io.briones.gradle.output.OutputWriter
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
@@ -186,6 +188,11 @@ class FailedTestResult(
     override fun getResultType(): TestResult.ResultType = TestResult.ResultType.FAILURE
     override fun getException(): Throwable = propException
     override fun getExceptions(): List<Throwable> = listOf(propException)
+}
+
+fun <T: OutputWriter> testContainer(out: T, reporter: TestReporter<T>, events: MockSuiteContainer.() -> Unit) {
+    val listener = reporter.toListener(out)
+    testContainer(listener, events)
 }
 
 // FIXME: This should not be duplicated within MockSuiteContainer

@@ -140,12 +140,12 @@ class MockTestDescriptor(
     private val propComposite: Boolean,
     private val propClassName: String?,
     private val propName: String,
-    private val propDisplayName: String
+    private val propDisplayName: String? = null
 ) : TestDescriptor {
     override fun getParent(): TestDescriptor? = propParent
     override fun isComposite(): Boolean = propComposite
     override fun getName(): String = propName
-    override fun getDisplayName(): String = propDisplayName
+    override fun getDisplayName(): String = propDisplayName ?: propName
     override fun getClassName(): String? = propClassName
 }
 

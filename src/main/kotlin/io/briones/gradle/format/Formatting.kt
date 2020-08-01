@@ -23,21 +23,26 @@ fun joinInBox(vararg lines: String): String {
 /** Return the duration as a human-readable string. e.g `123000ms` is formatted as `2m 3s` */
 fun TestResult.humanReadableDuration(): String {
     val duration = Duration.ofMillis(this.endTime - this.startTime)
-    if (duration < Duration.ofSeconds(1)) {
-        return "${duration.toMillis()}ms"
+
+    val secondsPart = duration.toSecondsPart()
+    val millisPart = duration.toMillisPart()
+    val segments = mutableListOf<String>()
+    if (duration.toHours() > 0) {
+        segments.add("${duration.toHours()}h")
     }
-    val display = StringBuilder()
-    val minutes = duration.toMinutesPart()
-    if (minutes > 0) {
-        display.append(minutes).append('m').append(' ')
+    if (duration.toMinutesPart() > 0) {
+        segments.add("${duration.toMinutesPart()}m")
     }
-    display.append(duration.toSecondsPart())
-    if (minutes == 0) {
-        val decimalSeconds = duration.toMillisPart() / Duration.ofSeconds(1).toMillis()
-        display.append('.').append(decimalSeconds)
+    val finalSegment = when {
+        duration > Duration.ofMinutes(1) -> "${secondsPart}s"
+        duration < Duration.ofSeconds(1) -> "${millisPart}ms"
+        else -> {
+            val tenths = duration.toMillisPart() / 100
+            "${duration.toSecondsPart()}.${tenths}s"
+        }
     }
-    display.append('s')
-    return display.toString()
+    segments.add(finalSegment)
+    return segments.joinToString(separator = " ")
 }
 
 /**

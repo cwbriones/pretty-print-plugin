@@ -2,6 +2,7 @@ package io.briones.gradle.output
 
 import com.google.common.truth.Truth.assertThat
 import io.briones.gradle.output.test.CapturingOutputWriter
+import io.briones.gradle.output.test.captureOutput
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -10,7 +11,7 @@ class IndentingOutputWriterTest {
 
     @Test
     fun `the basics`() {
-        val captured = executeAndCapture(INDENT, 1) { out ->
+        val captured = captureOutput(INDENT, 1) { out ->
             out.append("Hello ").println("World!")
             out.increaseIndentation()
             out.increaseIndentation()
@@ -45,7 +46,7 @@ class IndentingOutputWriterTest {
 
     @Test
     fun `it should handle newlines within append`() {
-        val captured = executeAndCapture(INDENT, 1) {
+        val captured = captureOutput(INDENT, 1) {
             it.append("Hello, World!\nThis line should be properly").append(" indented")
                 .append("\nand so should ").append("this one.\n")
                 .append("Here's two\nfinal lines\n")
@@ -63,7 +64,7 @@ class IndentingOutputWriterTest {
 
     @Test
     fun `it should handle newlines within println`() {
-        val captured = executeAndCapture(INDENT, base = 1) { out ->
+        val captured = captureOutput(INDENT, base = 1) { out ->
             out.println("One line\ncan actually be\nthree lines")
         }
         assertThat(captured).isEqualTo("""
@@ -74,19 +75,10 @@ class IndentingOutputWriterTest {
         """.trimMargin("|"))
     }
 
-    private fun executeAndCapture(
+    private fun captureOutput(
         indent: String,
         base: Int,
-        f: (IndentingOutputWriter) -> Unit
-    ): String {
-        val captor = CapturingOutputWriter()
-        val out = IndentingOutputWriter(
-            inner = captor,
-            indent = indent,
-            base = base
-        )
-        f(out)
-        return captor.unstyledOutput()
-    }
+        block: (IndentingOutputWriter) -> Unit
+    ): String = captureOutput({ IndentingOutputWriter(it, indent, base) }, block)
 }
 

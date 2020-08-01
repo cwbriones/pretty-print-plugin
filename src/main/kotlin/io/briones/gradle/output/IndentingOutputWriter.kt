@@ -32,23 +32,23 @@ class IndentingOutputWriter(
     }
 
     override fun append(value: String): IndentingOutputWriter {
-        if (value == "") return this
+        if (value.isEmpty()) return this
         // Handle any values passed in having newlines.
         val lines = value.lineSequence().iterator()
         val first = lines.next()
-        if (startOfLine && first != "") {
+        if (startOfLine && first.isNotEmpty()) {
             inner = inner.append(totalIndent())
         }
         inner.append(first)
-        startOfLine = first == ""
+        startOfLine = first.isEmpty()
         while (lines.hasNext()) {
             val line = lines.next()
             inner.println()
-            if (line != "") {
+            if (line.isNotEmpty()) {
                 inner.append(totalIndent())
             }
             inner.append(line)
-            startOfLine = line == ""
+            startOfLine = line.isEmpty()
         }
         return this
     }

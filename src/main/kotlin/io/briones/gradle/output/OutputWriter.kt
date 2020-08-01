@@ -16,10 +16,10 @@ abstract class OutputWriter {
     abstract fun style(style: Style): OutputWriter
 
     /** Append the given value to this OutputWriter. */
-    open fun append(value: String): OutputWriter = this
+    abstract fun append(value: String): OutputWriter
 
     /** Append the given value to this OutputWriter and write to a new line. */
-    open fun println(value: String = ""): OutputWriter = this
+    abstract fun println(value: String = ""): OutputWriter
 
     /**
      * Flush this OutputWriter.

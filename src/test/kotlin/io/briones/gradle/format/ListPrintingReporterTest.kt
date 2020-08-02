@@ -3,13 +3,14 @@ package io.briones.gradle.format
 import com.google.common.truth.Truth.assertThat
 import io.briones.gradle.format.test.testContainer
 import io.briones.gradle.output.test.captureOutput
+import io.briones.gradle.render.newListPrintingRenderer
 import org.junit.jupiter.api.Test
 
 class ListPrintingReporterTest {
     @Test
     fun `it renders correctly when all tests passed`() {
         val captured = captureOutput {
-            val dotReporter = newListPrintingReporter()
+            val dotReporter = newListPrintingRenderer()
             testContainer(it, dotReporter) {
                 suite("Top level suite") {
                     testPassed("Test One")
@@ -29,7 +30,7 @@ class ListPrintingReporterTest {
     @Test
     fun `it renders correctly some tests failed`() {
         val captured = captureOutput {
-            val dotReporter = newListPrintingReporter()
+            val dotReporter = newListPrintingRenderer()
             testContainer(it, dotReporter) {
                 suite("Top level suite") {
                     testPassed("Test One")

@@ -1,5 +1,6 @@
-package io.briones.gradle.format
+package io.briones.gradle.render
 
+import io.briones.gradle.format.humanReadableDuration
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.bold
 import io.briones.gradle.output.failure
@@ -8,8 +9,8 @@ import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 
-class TreePrintingReporter : TestReporter<IndentingOutputWriter> {
-    override fun afterTest(out: IndentingOutputWriter, testDescriptor: TestDescriptor, result: TestResult) {
+class TreePrintingRenderer : TestRenderer<IndentingOutputWriter> {
+    override fun renderTestResult(out: IndentingOutputWriter, testDescriptor: TestDescriptor, result: TestResult) {
         when (result.resultType) {
             TestResult.ResultType.SUCCESS -> out.success().append("✓").plain()
             TestResult.ResultType.FAILURE -> out.failure().append("✗")
@@ -23,7 +24,7 @@ class TreePrintingReporter : TestReporter<IndentingOutputWriter> {
             .println(" ($elapsed)")
     }
 
-    override fun beforeSuite(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor) {
+    override fun renderSuite(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor) {
         // Ideally we could say at a higher level if this is due to the test
         // runner (gradle) or if it's actually a test class
         if (suiteDescriptor.className == null) {
@@ -33,7 +34,7 @@ class TreePrintingReporter : TestReporter<IndentingOutputWriter> {
         out.increaseIndentation()
     }
 
-    override fun afterSuite(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
+    override fun renderSuiteResult(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
         if (suiteDescriptor.className == null) {
             return
         }

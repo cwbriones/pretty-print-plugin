@@ -1,6 +1,7 @@
-package io.briones.gradle.format
+package io.briones.gradle
 
 import io.briones.gradle.output.OutputWriter
+import io.briones.gradle.render.TestRenderer
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
@@ -11,9 +12,9 @@ import org.gradle.api.tasks.testing.TestResult
  * This Listener filters out any null events or results before directing them
  * to the underlying reporters.
  */
-class PrettyPrintingListener<T: OutputWriter>(
+class PrettyPrintListener<T: OutputWriter>(
     private val out: T,
-    private val reporters: List<TestReporter<T>>
+    private val renderers: List<TestRenderer<T>>
 ) : TestListener {
     override fun beforeTest(testDescriptor: TestDescriptor?) { /* unused */ }
 
@@ -21,8 +22,8 @@ class PrettyPrintingListener<T: OutputWriter>(
         if (testDescriptor == null || result == null) {
             return
         }
-        reporters.forEach {
-            it.afterTest(out, testDescriptor, result)
+        renderers.forEach {
+            it.renderTestResult(out, testDescriptor, result)
         }
     }
 
@@ -31,8 +32,8 @@ class PrettyPrintingListener<T: OutputWriter>(
             out.println()
         }
         if (suite != null) {
-            reporters.forEach {
-                it.beforeSuite(out, suite)
+            renderers.forEach {
+                it.renderSuite(out, suite)
             }
         }
     }
@@ -41,8 +42,8 @@ class PrettyPrintingListener<T: OutputWriter>(
         if (result == null || suite == null) {
             return
         }
-        reporters.forEach {
-            it.afterSuite(out, suite, result)
+        renderers.forEach {
+            it.renderSuiteResult(out, suite, result)
         }
     }
 }

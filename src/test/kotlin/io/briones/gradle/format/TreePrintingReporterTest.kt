@@ -4,13 +4,14 @@ import com.google.common.truth.Truth.assertThat
 import io.briones.gradle.format.test.testContainer
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.test.captureOutput
+import io.briones.gradle.render.TreePrintingRenderer
 import org.junit.jupiter.api.Test
 
 class TreePrintingReporterTest {
     @Test
     fun `test all passed`() {
         val captured = captureOutput {
-            val reporter = TreePrintingReporter()
+            val reporter = TreePrintingRenderer()
             val out = IndentingOutputWriter(it, indent="  ")
             testContainer(out, reporter) {
                 suite("Top level suite") {
@@ -54,7 +55,7 @@ class TreePrintingReporterTest {
     @Test
     fun `test reporting failure`() {
         val captured = captureOutput {
-            val reporter = TreePrintingReporter()
+            val reporter = TreePrintingRenderer()
             val out = IndentingOutputWriter(it, indent="  ")
             testContainer(out, reporter) {
                 suite("Top level suite") {

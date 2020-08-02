@@ -1,6 +1,6 @@
 package io.briones.gradle.format.test
 
-import io.briones.gradle.format.TestReporter
+import io.briones.gradle.render.TestRenderer
 import io.briones.gradle.output.OutputWriter
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
@@ -190,8 +190,8 @@ class FailedTestResult(
     override fun getExceptions(): List<Throwable> = listOf(propException)
 }
 
-fun <T: OutputWriter> testContainer(out: T, reporter: TestReporter<T>, events: MockSuiteContainer.() -> Unit) {
-    val listener = reporter.toListener(out)
+fun <T: OutputWriter> testContainer(out: T, renderer: TestRenderer<T>, events: MockSuiteContainer.() -> Unit) {
+    val listener = renderer.toListener(out)
     testContainer(listener, events)
 }
 

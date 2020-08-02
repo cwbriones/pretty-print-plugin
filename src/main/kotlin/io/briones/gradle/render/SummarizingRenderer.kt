@@ -1,5 +1,6 @@
-package io.briones.gradle.format
+package io.briones.gradle.render
 
+import io.briones.gradle.format.humanReadableDuration
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.applyIf
 import io.briones.gradle.output.failure
@@ -9,8 +10,8 @@ import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 
-class SummarizingReporter: TestReporter<IndentingOutputWriter> {
-    override fun afterSuite(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
+class SummarizingRenderer: TestRenderer<IndentingOutputWriter> {
+    override fun renderSuiteResult(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
         if (suiteDescriptor.parent == null) {
             summarize(out, result)
         }

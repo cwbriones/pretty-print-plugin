@@ -1,15 +1,17 @@
-package io.briones.gradle.format
+package io.briones.gradle.render
 
 import io.briones.gradle.output.OutputWriter
 import io.briones.gradle.output.bold
 import io.briones.gradle.output.failure
 import io.briones.gradle.output.info
 import io.briones.gradle.output.plain
+import io.briones.gradle.render.SimpleTestRenderer
+import io.briones.gradle.render.TestRenderer
 import org.gradle.api.tasks.testing.TestResult
 
-fun newDotPrintingReporter(maxWidth: Int): TestReporter<OutputWriter> {
+fun newDotPrintingRenderer(maxWidth: Int): TestRenderer<OutputWriter> {
     var lineWidth = 0
-    return SimpleTestReporter { out, _, result ->
+    return SimpleTestRenderer { out, _, result ->
         if (lineWidth == maxWidth) {
             out.println()
             lineWidth = 0

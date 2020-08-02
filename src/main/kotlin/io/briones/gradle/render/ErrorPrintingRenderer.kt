@@ -1,5 +1,7 @@
-package io.briones.gradle.format
+package io.briones.gradle.render
 
+import io.briones.gradle.format.formattedStackTrace
+import io.briones.gradle.format.fqDisplayName
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.failure
 import org.gradle.api.tasks.testing.TestDescriptor
@@ -11,16 +13,16 @@ import org.gradle.api.tasks.testing.TestResult
  * If `displayFailuresInline` is true, the exceptions will be reported after each individual
  * test run. They will otherwise be reported after all tests have completed.
  */
-class ErrorPrintingReporter(
+class ErrorPrintingRenderer(
     private val displayFailuresInline: Boolean
-) : TestReporter<IndentingOutputWriter> {
+) : TestRenderer<IndentingOutputWriter> {
     private class TestFailure(
         val descriptor: TestDescriptor,
         val exception: Throwable
     )
     private var failures = mutableListOf<TestFailure>()
 
-    override fun afterTest(out: IndentingOutputWriter, testDescriptor: TestDescriptor, result: TestResult) {
+    override fun renderTestResult(out: IndentingOutputWriter, testDescriptor: TestDescriptor, result: TestResult) {
         if (result.resultType != TestResult.ResultType.FAILURE) {
             return
         }
@@ -33,7 +35,7 @@ class ErrorPrintingReporter(
         failures.add(TestFailure(testDescriptor, e))
     }
 
-    override fun afterSuite(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
+    override fun renderSuiteResult(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
         if (suiteDescriptor.parent != null) {
             return
         }

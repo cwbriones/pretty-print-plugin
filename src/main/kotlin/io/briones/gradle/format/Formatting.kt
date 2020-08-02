@@ -19,6 +19,7 @@ fun joinInBox(vararg lines: String): String {
 }
 
 /** Return the duration as a human-readable string. e.g `123000ms` is formatted as `2m 3s` */
+@Suppress("MagicNumber")
 fun humanReadableDuration(duration: Duration): String {
     val secondsPart = duration.toSecondsPart()
     val millisPart = duration.toMillisPart()
@@ -33,6 +34,7 @@ fun humanReadableDuration(duration: Duration): String {
         duration > Duration.ofMinutes(1) -> "${secondsPart}s"
         duration < Duration.ofSeconds(1) -> "${millisPart}ms"
         else -> {
+
             val tenths = duration.toMillisPart() / 100
             "${duration.toSecondsPart()}.${tenths}s"
         }

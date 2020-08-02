@@ -12,14 +12,12 @@ enum class Format {
     List,
     Mocha;
 
-    internal fun listener(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
-        Dot -> newDotPrintingRenderer(80)
-        List -> newListPrintingRenderer(symbols)
-        Mocha -> TreePrintingRenderer(symbols)
+    companion object {
+        private const val DEFAULT_DOT_PRINTING_WIDTH = 80
     }
 
-    internal fun reporters(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
-        Dot -> newDotPrintingRenderer(80)
+    internal fun listener(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
+        Dot -> newDotPrintingRenderer(DEFAULT_DOT_PRINTING_WIDTH)
         List -> newListPrintingRenderer(symbols)
         Mocha -> TreePrintingRenderer(symbols)
     }

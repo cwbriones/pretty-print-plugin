@@ -13,17 +13,11 @@ open class PrettyPrintTestExtension {
             return format.toString().toLowerCase()
         }
         set(value) {
-            require(value.isNotEmpty()) { "Format name cannot be empty." }
-            val normalized = value.toLowerCase().toCharArray().let {
-                it[0] = it[0].toUpperCase()
-                it.joinToString(separator="")
-            }
-            try {
-                format = Format.valueOf(normalized)
-            } catch (e: IllegalArgumentException) {
-                val formats = Format.values().joinToString { "'${it.name.toLowerCase()}'" }
-                throw IllegalArgumentException("Invalid format '$value', valid formats: $formats")
-            }
+            require(value.isNotBlank()) { "Format name cannot be empty." }
+            val valid = Format.values().joinToString { "'${it.name.toLowerCase()}'" }
+            val normalized = value.toLowerCase()
+            format = Format.values().find { it.name.toLowerCase() == normalized } ?:
+                throw IllegalArgumentException("Invalid format '$value', valid formats: $valid")
         }
 }
 

@@ -1,6 +1,7 @@
 package io.briones.gradle.format
 
 import io.briones.gradle.output.IndentingOutputWriter
+import io.briones.gradle.output.applyIf
 import io.briones.gradle.output.failure
 import io.briones.gradle.output.info
 import io.briones.gradle.output.plain
@@ -34,16 +35,16 @@ class SummarizingReporter: TestReporter<IndentingOutputWriter> {
             .println()
             .println()
             .success()
-            .applyingIf(allPassed) {
+            .applyIf(allPassed) {
                 it.append("✓ ")
             }
             .append("$successCount passing")
             .plain()
             .println(" ($elapsed)")
-            .applyingIf(!allPassed) {
+            .applyIf(!allPassed) {
                 it.failure().println("$failedCount failing")
             }
-            .applyingIf(result.skippedTestCount > 0) {
+            .applyIf(result.skippedTestCount > 0) {
                 it.info().println("$skippedCount skipped")
             }
     }

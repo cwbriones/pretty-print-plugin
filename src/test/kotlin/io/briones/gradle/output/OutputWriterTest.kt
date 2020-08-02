@@ -7,15 +7,15 @@ import org.junit.jupiter.api.Test
 
 class OutputWriterTest {
     @Test
-    fun applyingIf() {
+    fun `it should only apply the block if the condition is true`() {
         val captured = captureOutput {
-            it.applyingIf(true) { out ->
+            it.applyIf(true) { out ->
                 out.append("one")
-            }.applyingIf(false) { out ->
+            }.applyIf(false) { out ->
                 out.append("hello")
-            }.applyingIf(true) { out ->
+            }.applyIf(true) { out ->
                 out.append("two")
-            }.applyingIf(false) { out ->
+            }.applyIf(false) { out ->
                 out.append("world")
             }
         }

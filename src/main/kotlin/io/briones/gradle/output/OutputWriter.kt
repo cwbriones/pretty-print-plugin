@@ -1,17 +1,6 @@
 package io.briones.gradle.output
 
 abstract class OutputWriter {
-    /**
-     * Run the given lambda if the condition is `true`.
-     * This can be useful for applying conditional output while chaining.
-     */
-    fun applyingIf(condition: Boolean, f: (OutputWriter) -> OutputWriter): OutputWriter =
-        if (condition) {
-            f(this)
-        } else {
-            this
-        }
-
     /** Apply the given style to this OutputWriter. */
     abstract fun style(style: Style): OutputWriter
 
@@ -28,6 +17,19 @@ abstract class OutputWriter {
      */
     open fun flush(): OutputWriter = this
 }
+
+/**
+ * Run the given lambda if the condition is `true`.
+ *
+ * This can be useful for applying conditional output while chaining builders.
+ */
+fun <T> T.applyIf(condition: Boolean, f: (T) -> T): T =
+    if (condition) {
+        f(this)
+    } else {
+        this
+    }
+
 
 /** Apply the Failure style. */
 fun <T: OutputWriter> T.failure(): T {

@@ -14,8 +14,7 @@ class ErrorRendererTest {
             val out = IndentingOutputWriter(it, indent = " ")
             val errorRenderer = ErrorRenderer(
                 showInline = false,
-                showStackTraces = true,
-                showCauses = true
+                formatter = SimpleExceptionFormatter()
             )
             testContainer(out, errorRenderer) {
                 suite("Top level suite") {
@@ -34,8 +33,7 @@ class ErrorRendererTest {
             val out = IndentingOutputWriter(it, indent = " ")
             val errorRenderer = ErrorRenderer(
                 showInline = false,
-                showStackTraces = true,
-                showCauses = true
+                formatter = SimpleExceptionFormatter()
             )
             testContainer(out, errorRenderer) {
                 suite("Top level suite") {
@@ -63,8 +61,7 @@ class ErrorRendererTest {
             val out = IndentingOutputWriter(it, indent = " ")
             val errorRenderer = ErrorRenderer(
                 showInline = true,
-                showStackTraces = true,
-                showCauses = true
+                formatter = SimpleExceptionFormatter()
             )
             testContainer(out, errorRenderer) {
                 suite("Top level suite") {

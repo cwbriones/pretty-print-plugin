@@ -1,5 +1,6 @@
 package io.briones.gradle
 
+import io.briones.gradle.format.TruncatingExceptionFormatter
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.JColorOutputWriter
 import io.briones.gradle.output.OutputWriter
@@ -51,13 +52,16 @@ class PrettyPrintTestPlugin : Plugin<Project> {
     private fun buildErrorRenderer(
         ext: PrettyPrintTestExtension
     ): TestRenderer<IndentingOutputWriter>? {
+        val formatter = TruncatingExceptionFormatter(
+            showStackTraces = ext.showStackTraces,
+            showCauses = ext.showCauses
+        )
         if (!ext.showExceptions) {
             return null
         }
         return ErrorRenderer(
             ext.inlineExceptions,
-            ext.showStackTraces,
-            ext.showCauses
+            formatter
         )
     }
 

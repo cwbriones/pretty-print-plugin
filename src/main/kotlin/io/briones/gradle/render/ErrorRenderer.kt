@@ -1,11 +1,10 @@
 package io.briones.gradle.render
 
+import io.briones.gradle.format.ExceptionFormatter
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.failure
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
-import java.io.PrintWriter
-import java.io.StringWriter
 
 /**
  * A reporter that displays exceptions from failed tests.
@@ -15,8 +14,7 @@ import java.io.StringWriter
  */
 class ErrorRenderer(
     private val showInline: Boolean,
-    private val showStackTraces: Boolean,
-    private val showCauses: Boolean
+    private val formatter: ExceptionFormatter
 ) : TestRenderer<IndentingOutputWriter> {
     private class TestFailure(
         val descriptor: TestDescriptor,
@@ -31,7 +29,7 @@ class ErrorRenderer(
         }
         val e = result.exception ?: throw IllegalStateException("Failed test must have exception")
         if (showInline) {
-            val trace = formattedStackTrace(e, showStackTraces, showCauses, testDescriptor.className)
+            val trace = formatter.format(e, testDescriptor.className)
             out.failure().indented { println(trace) }
             return
         }
@@ -52,7 +50,7 @@ class ErrorRenderer(
         for ((i, failure) in failures.withIndex()) {
             val e = failure.exception
             val fullName = failure.descriptor.fqDisplayName()
-            val trace = formattedStackTrace(e, showStackTraces, showCauses, failure.descriptor.className)
+            val trace = formatter.format(e, failure.descriptor.className)
             out.failure()
                 .println()
                 .println("${i + 1}) $fullName")
@@ -62,37 +60,4 @@ class ErrorRenderer(
                 }
         }
     }
-}
-
-fun formattedStackTrace(e: Throwable,
-                        showStackTraces: Boolean,
-                        showCauses: Boolean,
-                        testClassName: String?): String {
-    truncateStackTrace(e, showStackTraces, null)
-    val cause = e.cause
-    if (cause != null) {
-        truncateStackTrace(cause, showStackTraces, testClassName)
-    }
-    val sw = StringWriter()
-    e.printStackTrace(PrintWriter(sw))
-    if (showCauses)
-        return sw.toString().trim()
-    return sw.toString()
-        .lines()
-        .takeWhile { !it.startsWith("Caused by:") }
-        .joinToString(separator="\n")
-}
-
-private fun truncateStackTrace(e: Throwable, showStackTraces: Boolean, testClassName: String?) {
-    if (!showStackTraces) {
-        e.stackTrace = arrayOf()
-    }
-    val end = e.stackTrace
-        .takeWhile {
-            !it.isNativeMethod
-                && (testClassName == null
-                || it.className != testClassName)
-        }
-        .count()
-    e.stackTrace = e.stackTrace.copyOfRange(0, end)
 }

@@ -1,7 +1,5 @@
 package io.briones.gradle.format
 
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.time.Duration
 
 /** Return a string that contains the given lines surrounded by a box. */

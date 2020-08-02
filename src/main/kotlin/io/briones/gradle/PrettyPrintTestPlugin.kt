@@ -8,6 +8,7 @@ import io.briones.gradle.render.ErrorRenderer
 import io.briones.gradle.render.FailureCountingSymbols
 import io.briones.gradle.render.SummarizingRenderer
 import io.briones.gradle.render.Symbols
+import io.briones.gradle.render.TestRenderer
 import io.briones.gradle.render.defaultUnicodeSymbols
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,19 +26,18 @@ class PrettyPrintTestPlugin : Plugin<Project> {
             applyOverrides(project, ext)
             val out = createOutputFactory(ext)
             var symbols: Symbols = defaultUnicodeSymbols
-            val inlineExceptions = ext.inlineExceptions && ext.format.supportsInlineExceptions()
-            if (!inlineExceptions) {
+            if (!ext.inlineExceptions) {
                 symbols = FailureCountingSymbols(symbols)
             }
-            val reporter = ext.format.listener(symbols)
-            val reporters = listOf(
-                reporter,
-                ErrorRenderer(inlineExceptions),
-                SummarizingRenderer(symbols)
-            )
+            val renderer = ext.format.renderer(symbols)
+            val renderers = mutableListOf(renderer)
+            buildErrorRenderer(ext)?.let {
+                renderers.add(it)
+            }
+            renderers.add(SummarizingRenderer(symbols))
             val listener = PrettyPrintListener(
                 IndentingOutputWriter(out, indent = "  ", base = 1),
-                reporters
+                renderers
             )
             project.tasks.withType<Test>().configureEach {
                 testLogging {
@@ -46,6 +46,19 @@ class PrettyPrintTestPlugin : Plugin<Project> {
                 addTestListener(listener)
             }
         }
+    }
+
+    private fun buildErrorRenderer(
+        ext: PrettyPrintTestExtension
+    ): TestRenderer<IndentingOutputWriter>? {
+        if (!ext.showExceptions) {
+            return null
+        }
+        return ErrorRenderer(
+            ext.inlineExceptions,
+            ext.showStackTraces,
+            ext.showCauses
+        )
     }
 
     private fun applyOverrides(project: Project, ext: PrettyPrintTestExtension) {

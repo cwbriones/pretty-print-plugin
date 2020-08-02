@@ -16,7 +16,7 @@ enum class Format {
         private const val DEFAULT_DOT_PRINTING_WIDTH = 80
     }
 
-    internal fun listener(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
+    internal fun renderer(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
         Dot -> newDotPrintingRenderer(DEFAULT_DOT_PRINTING_WIDTH)
         List -> newListPrintingRenderer(symbols)
         Mocha -> TreePrintingRenderer(symbols)

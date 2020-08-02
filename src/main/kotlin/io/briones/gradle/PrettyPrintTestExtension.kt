@@ -5,7 +5,24 @@ import io.briones.gradle.format.Format
 open class PrettyPrintTestExtension {
     var color: Boolean = true
     var format: Format = Format.Mocha
+        set(value) {
+            field = value
+            if (!value.supportsInlineExceptions()) {
+                inlineExceptions = false
+            }
+        }
+
     var inlineExceptions: Boolean = false
+        set(value) {
+            field = value
+            if (value && !format.supportsInlineExceptions()) {
+                field = false
+            }
+        }
+
+    var showExceptions: Boolean = true
+    var showStackTraces: Boolean = true
+    var showCauses: Boolean = true
 
     var formatName: String
         get() {

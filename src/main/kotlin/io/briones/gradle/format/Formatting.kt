@@ -34,28 +34,10 @@ fun humanReadableDuration(duration: Duration): String {
         duration > Duration.ofMinutes(1) -> "${secondsPart}s"
         duration < Duration.ofSeconds(1) -> "${millisPart}ms"
         else -> {
-
             val tenths = duration.toMillisPart() / 100
             "${duration.toSecondsPart()}.${tenths}s"
         }
     }
     segments.add(finalSegment)
     return segments.joinToString(separator = " ")
-}
-
-fun formattedStackTrace(e: Throwable, className: String?): String {
-    truncateStackTrace(e, className)
-    e.cause?.let { truncateStackTrace(it) }
-    val sw = StringWriter()
-    e.printStackTrace(PrintWriter(sw))
-    return sw.toString().trim()
-}
-
-private fun truncateStackTrace(e: Throwable, className: String? = null) {
-    val end = e.stackTrace
-        .takeWhile { s -> !s.isNativeMethod }
-        .takeWhile { s -> className == null || s.className == className }
-        .count()
-
-    e.stackTrace = e.stackTrace.copyOfRange(0, end)
 }

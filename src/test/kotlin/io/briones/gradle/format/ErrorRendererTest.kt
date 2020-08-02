@@ -12,7 +12,11 @@ class ErrorRendererTest {
     fun `it renders nothing when all tests pass`() {
         val captured = captureOutput {
             val out = IndentingOutputWriter(it, indent = " ")
-            val errorRenderer = ErrorRenderer(true)
+            val errorRenderer = ErrorRenderer(
+                showInline = false,
+                showStackTraces = true,
+                showCauses = true
+            )
             testContainer(out, errorRenderer) {
                 suite("Top level suite") {
                     testPassed("Test One")
@@ -28,7 +32,11 @@ class ErrorRendererTest {
     fun `it renders correctly if some tests failed`() {
         val captured = captureOutput {
             val out = IndentingOutputWriter(it, indent = " ")
-            val errorRenderer = ErrorRenderer(false)
+            val errorRenderer = ErrorRenderer(
+                showInline = false,
+                showStackTraces = true,
+                showCauses = true
+            )
             testContainer(out, errorRenderer) {
                 suite("Top level suite") {
                     testPassed("Test One")
@@ -53,7 +61,11 @@ class ErrorRendererTest {
     fun `it renders correctly inline if some tests failed`() {
         val captured = captureOutput {
             val out = IndentingOutputWriter(it, indent = " ")
-            val errorRenderer = ErrorRenderer(true)
+            val errorRenderer = ErrorRenderer(
+                showInline = true,
+                showStackTraces = true,
+                showCauses = true
+            )
             testContainer(out, errorRenderer) {
                 suite("Top level suite") {
                     testPassed("Test One")

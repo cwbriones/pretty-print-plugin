@@ -18,7 +18,7 @@ class SummarizingRenderer(private val symbols: Symbols): TestRenderer<IndentingO
     }
 
     private fun summarize(out: IndentingOutputWriter, result: TestResult) {
-        val elapsed = result.humanReadableDuration()
+        val elapsed = humanReadableDuration(result.getDuration())
         val allPassed = result.failedTestCount == 0L
         val padding = listOf(
             result.successfulTestCount,

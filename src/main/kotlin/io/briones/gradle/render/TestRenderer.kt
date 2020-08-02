@@ -50,13 +50,13 @@ interface TestRenderer<in T: OutputWriter> {
 }
 
 /**
- * Helper for implementing a test reporter when you only care about `afterTest` events.
+ * Helper for implementing a test reporter when you only care about `renderTest` events.
  */
-class SimpleTestRenderer<in T: OutputWriter>(afterTest: (T, TestDescriptor, TestResult) -> Unit) : TestRenderer<T> {
-    private val afterTestProp = afterTest
+class SimpleTestRenderer<in T: OutputWriter>(renderTest: (T, TestDescriptor, TestResult) -> Unit) : TestRenderer<T> {
+    private val renderTestProp = renderTest
 
     override fun renderTestResult(out: T, testDescriptor: TestDescriptor, result: TestResult) {
-        afterTestProp(out, testDescriptor, result)
+        renderTestProp(out, testDescriptor, result)
     }
 
     override fun renderSuite(out: T, suiteDescriptor: TestDescriptor) {}

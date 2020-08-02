@@ -20,7 +20,7 @@ class MockClock(start: Instant = Instant.now()) {
 }
 
 class MockSuiteContainer(
-    private val suiteDescriptor: TestDescriptor,
+    private val suiteDescriptor: TestDescriptor?,
     private val listener: TestListener,
     private val clock: MockClock
 ) {
@@ -195,23 +195,8 @@ fun <T: OutputWriter> testContainer(out: T, renderer: TestRenderer<T>, events: M
     testContainer(listener, events)
 }
 
-// FIXME: This should not be duplicated within MockSuiteContainer
 fun testContainer(listener: TestListener, events: MockSuiteContainer.() -> Unit) {
-    val topLevelDescriptor = MockTestDescriptor(
-        null,
-        true,
-        null,
-        "Mock Test Container",
-        "Mock Test Container"
-    )
     val clock = MockClock(Instant.parse("2020-07-31T12:34:56Z"))
-    val start = clock.now
-    val container = MockSuiteContainer(
-        topLevelDescriptor,
-        listener,
-        clock
-    )
-    listener.beforeSuite(topLevelDescriptor)
+    val container = MockSuiteContainer(null, listener, clock)
     events(container)
-    listener.afterSuite(topLevelDescriptor, container.result(start, clock.now))
 }

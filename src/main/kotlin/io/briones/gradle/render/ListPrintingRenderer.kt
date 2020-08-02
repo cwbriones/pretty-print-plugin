@@ -1,6 +1,5 @@
 package io.briones.gradle.render
 
-import io.briones.gradle.format.fqDisplayName
 import io.briones.gradle.format.humanReadableDuration
 import io.briones.gradle.output.OutputWriter
 import io.briones.gradle.output.failure
@@ -15,7 +14,7 @@ fun newListPrintingRenderer(symbols: Symbols): TestRenderer<OutputWriter> = Simp
         TestResult.ResultType.SKIPPED -> out.plain().append(symbols.skipped)
         else -> out.plain().append(" ")
     }
-    val elapsed = result.humanReadableDuration()
+    val elapsed = humanReadableDuration(result.getDuration())
     val displayName = testDescriptor.fqDisplayName()
     out.println(" $displayName ($elapsed)")
 }

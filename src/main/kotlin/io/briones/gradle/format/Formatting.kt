@@ -1,7 +1,5 @@
 package io.briones.gradle.format
 
-import org.gradle.api.tasks.testing.TestDescriptor
-import org.gradle.api.tasks.testing.TestResult
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.time.Duration
@@ -21,9 +19,7 @@ fun joinInBox(vararg lines: String): String {
 }
 
 /** Return the duration as a human-readable string. e.g `123000ms` is formatted as `2m 3s` */
-fun TestResult.humanReadableDuration(): String {
-    val duration = Duration.ofMillis(this.endTime - this.startTime)
-
+fun humanReadableDuration(duration: Duration): String {
     val secondsPart = duration.toSecondsPart()
     val millisPart = duration.toMillisPart()
     val segments = mutableListOf<String>()
@@ -43,22 +39,6 @@ fun TestResult.humanReadableDuration(): String {
     }
     segments.add(finalSegment)
     return segments.joinToString(separator = " ")
-}
-
-/**
- * Return the fully-qualified display name of this test descriptor
- *
- * This prepends the display name of all enclosing suites, e.g.
- *
- * `MySuite > WhenTheresAnEnclosingClass > itsIncludedInTheName()`
- */
-fun TestDescriptor.fqDisplayName(separator: String = " > "): String {
-    return generateSequence(this) { it.parent }
-        .filter { it.className != null }
-        .map { it.displayName }
-        .toList()
-        .reversed()
-        .joinToString(separator = separator)
 }
 
 fun formattedStackTrace(e: Throwable, className: String?): String {

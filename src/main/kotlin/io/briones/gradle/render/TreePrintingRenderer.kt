@@ -17,7 +17,7 @@ class TreePrintingRenderer(val symbols: Symbols) : TestRenderer<IndentingOutputW
             TestResult.ResultType.SKIPPED -> out.plain().append(symbols.skipped)
             else -> out.plain().append(" ")
         }
-        val elapsed = result.humanReadableDuration()
+        val elapsed = humanReadableDuration(result.getDuration())
         out.bold()
             .append(" ${testDescriptor.displayName}")
             .plain()

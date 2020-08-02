@@ -1,7 +1,6 @@
 package io.briones.gradle.render
 
 import io.briones.gradle.format.formattedStackTrace
-import io.briones.gradle.format.fqDisplayName
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.failure
 import org.gradle.api.tasks.testing.TestDescriptor

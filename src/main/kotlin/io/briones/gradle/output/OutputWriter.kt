@@ -30,33 +30,32 @@ fun <T> T.applyIf(condition: Boolean, f: (T) -> T): T =
         this
     }
 
-
 /** Apply the Failure style. */
-fun <T: OutputWriter> T.failure(): T {
+fun <T : OutputWriter> T.failure(): T {
     style(Style.Failure)
     return this
 }
 
 /** Apply the Success style. */
-fun <T: OutputWriter> T.success(): T {
+fun <T : OutputWriter> T.success(): T {
     style(Style.Success)
     return this
 }
 
 /** Apply the Info style. */
-fun <T: OutputWriter> T.info(): T {
+fun <T : OutputWriter> T.info(): T {
     style(Style.Info)
     return this
 }
 
 /** Apply the Plain style. */
-fun <T: OutputWriter> T.plain(): OutputWriter {
+fun <T : OutputWriter> T.plain(): OutputWriter {
     style(Style.Plain)
     return this
 }
 
 /** Apply the Bold style. */
-fun <T: OutputWriter> T.bold(): OutputWriter {
+fun <T : OutputWriter> T.bold(): OutputWriter {
     style(Style.Bold)
     return this
 }

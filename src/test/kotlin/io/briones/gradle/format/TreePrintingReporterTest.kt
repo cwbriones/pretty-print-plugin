@@ -13,7 +13,7 @@ class TreePrintingReporterTest {
     fun `test all passed`() {
         val captured = captureOutput {
             val reporter = TreePrintingRenderer(defaultUnicodeSymbols)
-            val out = IndentingOutputWriter(it, indent="  ")
+            val out = IndentingOutputWriter(it, indent = "  ")
             testContainer(out, reporter) {
                 suite("Top level suite") {
                     testPassed("Test One")
@@ -34,7 +34,8 @@ class TreePrintingReporterTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         Top level suite
           ✓ Test One (50ms)
           ✓ Test Two (50ms)
@@ -50,14 +51,15 @@ class TreePrintingReporterTest {
           ✓ Test Two (50ms)
           ✓ Test Three (50ms)
         
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 
     @Test
     fun `test reporting failure`() {
         val captured = captureOutput {
             val reporter = TreePrintingRenderer(defaultUnicodeSymbols)
-            val out = IndentingOutputWriter(it, indent="  ")
+            val out = IndentingOutputWriter(it, indent = "  ")
             testContainer(out, reporter) {
                 suite("Top level suite") {
                     testPassed("Test One")
@@ -72,7 +74,8 @@ class TreePrintingReporterTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         Top level suite
           ✓ Test One (50ms)
           ✓ Test Two (50ms)
@@ -83,7 +86,7 @@ class TreePrintingReporterTest {
           ✓ Test Two (50ms)
           ✓ Test Three (50ms)
         
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 }
-

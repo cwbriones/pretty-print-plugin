@@ -2,7 +2,7 @@ package io.briones.gradle.format
 
 fun dummyThrowable(msg: String, n: Int): Throwable = try {
     dummyStackTraceN(msg, n)
-} catch(e: Exception) {
+} catch (e: Exception) {
     e
 }
 

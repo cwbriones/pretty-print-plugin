@@ -51,7 +51,7 @@ fun captureOutput(
     block: (OutputWriter) -> Unit
 ): String = captureOutput({ it }, block)
 
-fun <T: OutputWriter> captureOutput(
+fun <T : OutputWriter> captureOutput(
     init: (OutputWriter) -> T,
     block: (T) -> Unit
 ): String {
@@ -65,7 +65,7 @@ fun captureStyledOutput(
     block: (OutputWriter) -> Unit
 ): String = captureStyledOutput({ it }, block)
 
-fun <T: OutputWriter> captureStyledOutput(
+fun <T : OutputWriter> captureStyledOutput(
     init: (OutputWriter) -> T,
     block: (T) -> Unit
 ): String {

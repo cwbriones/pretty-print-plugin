@@ -38,13 +38,15 @@ class ErrorRendererTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         |
         |1) Top level suite > Test Four
         |
         | java.lang.RuntimeException: boom
         |
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
 
     @Test
@@ -61,9 +63,11 @@ class ErrorRendererTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         | java.lang.RuntimeException: boom
         |
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
 }

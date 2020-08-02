@@ -20,12 +20,14 @@ class ListPrintingReporterTest {
                 }
             }
         }
-        assertThat("""
+        assertThat(
+            """
         ✓ Top level suite > Test One (50ms)
         ✓ Top level suite > Test Two (50ms)
         ✓ Top level suite > Test Three (50ms)
         
-        """.trimIndent()).isEqualTo(captured)
+            """.trimIndent()
+        ).isEqualTo(captured)
     }
 
     @Test
@@ -41,12 +43,14 @@ class ListPrintingReporterTest {
                 }
             }
         }
-        assertThat("""
+        assertThat(
+            """
         ✓ Top level suite > Test One (50ms)
         · Top level suite > Test Two (50ms)
         ✓ Top level suite > Test Three (50ms)
         ✗ Top level suite > Test Four (50ms)
         
-        """.trimIndent()).isEqualTo(captured)
+            """.trimIndent()
+        ).isEqualTo(captured)
     }
 }

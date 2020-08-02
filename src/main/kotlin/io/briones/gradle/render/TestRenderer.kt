@@ -15,7 +15,7 @@ import org.gradle.api.tasks.testing.TestResult
  * The latter point in particular means that we can abstract over output modes allowing for the renderer
  * to state the capabilities it requires to function.
  */
-interface TestRenderer<in T: OutputWriter> {
+interface TestRenderer<in T : OutputWriter> {
     fun renderTestResult(out: T, testDescriptor: TestDescriptor, result: TestResult) {}
 
     fun renderSuite(out: T, suiteDescriptor: TestDescriptor) {}
@@ -52,7 +52,7 @@ interface TestRenderer<in T: OutputWriter> {
 /**
  * Helper for implementing a test reporter when you only care about `renderTest` events.
  */
-class SimpleTestRenderer<in T: OutputWriter>(renderTest: (T, TestDescriptor, TestResult) -> Unit) : TestRenderer<T> {
+class SimpleTestRenderer<in T : OutputWriter>(renderTest: (T, TestDescriptor, TestResult) -> Unit) : TestRenderer<T> {
     private val renderTestProp = renderTest
 
     override fun renderTestResult(out: T, testDescriptor: TestDescriptor, result: TestResult) {

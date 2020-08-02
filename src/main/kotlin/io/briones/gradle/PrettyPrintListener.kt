@@ -12,7 +12,7 @@ import org.gradle.api.tasks.testing.TestResult
  * This Listener filters out any null events or results before directing them
  * to the underlying reporters.
  */
-class PrettyPrintListener<T: OutputWriter>(
+class PrettyPrintListener<T : OutputWriter>(
     private val out: T,
     private val renderers: List<TestRenderer<T>>
 ) : TestListener {
@@ -47,4 +47,3 @@ class PrettyPrintListener<T: OutputWriter>(
         }
     }
 }
-

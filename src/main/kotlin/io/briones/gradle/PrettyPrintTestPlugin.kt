@@ -1,12 +1,12 @@
 package io.briones.gradle
 
-import io.briones.gradle.render.ErrorRenderer
-import io.briones.gradle.render.SummarizingRenderer
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.JColorOutputWriter
 import io.briones.gradle.output.OutputWriter
 import io.briones.gradle.output.UnstyledOutputWriter
+import io.briones.gradle.render.ErrorRenderer
 import io.briones.gradle.render.FailureCountingSymbols
+import io.briones.gradle.render.SummarizingRenderer
 import io.briones.gradle.render.Symbols
 import io.briones.gradle.render.defaultUnicodeSymbols
 import org.gradle.api.Plugin
@@ -73,4 +73,3 @@ class PrettyPrintTestPlugin : Plugin<Project> {
         return if (ext.color) JColorOutputWriter(System.out) else UnstyledOutputWriter(System.out)
     }
 }
-

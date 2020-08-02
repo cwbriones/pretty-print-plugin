@@ -1,7 +1,6 @@
 package io.briones.gradle
 
 import io.briones.gradle.format.Format
-import java.lang.IllegalArgumentException
 
 open class PrettyPrintTestExtension {
     var color: Boolean = true
@@ -16,8 +15,7 @@ open class PrettyPrintTestExtension {
             require(value.isNotBlank()) { "Format name cannot be empty." }
             val valid = Format.values().joinToString { "'${it.name.toLowerCase()}'" }
             val normalized = value.toLowerCase()
-            format = Format.values().find { it.name.toLowerCase() == normalized } ?:
-                throw IllegalArgumentException("Invalid format '$value', valid formats: $valid")
+            format = Format.values().find { it.name.toLowerCase() == normalized }
+                ?: throw IllegalArgumentException("Invalid format '$value', valid formats: $valid")
         }
 }
-

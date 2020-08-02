@@ -19,9 +19,11 @@ class DotPrintingReporterTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         ...
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 
     @Test
@@ -37,8 +39,10 @@ class DotPrintingReporterTest {
                 }
             }
         }
-        assertThat("""
+        assertThat(
+            """
         .s.X
-        """.trimIndent()).isEqualTo(captured)
+            """.trimIndent()
+        ).isEqualTo(captured)
     }
 }

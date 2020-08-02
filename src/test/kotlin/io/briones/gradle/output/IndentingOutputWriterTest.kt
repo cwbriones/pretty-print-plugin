@@ -20,12 +20,14 @@ class IndentingOutputWriterTest {
             out.println("Reel it back in")
         }
 
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
            | >>Hello World!
            | >> >> >>Onwards and rightwards
            | >> >>Reel it back in
            |
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
 
     @Test
@@ -52,14 +54,16 @@ class IndentingOutputWriterTest {
                 .append("Here's two\nfinal lines\n")
         }
 
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
             | >>Hello, World!
             | >>This line should be properly indented
             | >>and so should this one.
             | >>Here's two
             | >>final lines
             |
-        """.trimMargin("|"))
+        """.trimMargin("|")
+        )
     }
 
     @Test
@@ -67,12 +71,14 @@ class IndentingOutputWriterTest {
         val captured = captureOutput(INDENT, base = 1) { out ->
             out.println("One line\ncan actually be\nthree lines")
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
             | >>One line
             | >>can actually be
             | >>three lines
             |
-        """.trimMargin("|"))
+        """.trimMargin("|")
+        )
     }
 
     private fun captureOutput(
@@ -81,4 +87,3 @@ class IndentingOutputWriterTest {
         block: (IndentingOutputWriter) -> Unit
     ): String = captureOutput({ IndentingOutputWriter(it, indent, base) }, block)
 }
-

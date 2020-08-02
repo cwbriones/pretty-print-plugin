@@ -19,6 +19,7 @@ class ErrorRenderer(
         val descriptor: TestDescriptor,
         val exception: Throwable
     )
+
     private var failures = mutableListOf<TestFailure>()
 
     override fun renderTestResult(out: IndentingOutputWriter, testDescriptor: TestDescriptor, result: TestResult) {

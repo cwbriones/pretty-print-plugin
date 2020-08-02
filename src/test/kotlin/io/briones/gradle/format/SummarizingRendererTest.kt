@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import io.briones.gradle.format.test.testContainer
 import io.briones.gradle.output.IndentingOutputWriter
 import io.briones.gradle.output.test.captureOutput
-import io.briones.gradle.render.ErrorRenderer
 import io.briones.gradle.render.SummarizingRenderer
 import io.briones.gradle.render.defaultUnicodeSymbols
 import org.junit.jupiter.api.Test
@@ -23,12 +22,14 @@ class SummarizingRendererTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         
         
         ✓ 3 passing (150ms)
         
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 
     @Test
@@ -45,13 +46,15 @@ class SummarizingRendererTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         
         
         ✓ 3 passing (200ms)
           1 skipped
         
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 
     @Test
@@ -68,13 +71,15 @@ class SummarizingRendererTest {
                 }
             }
         }
-        assertThat(captured).isEqualTo("""
+        assertThat(captured).isEqualTo(
+            """
         
         
         2 passing (200ms)
         1 failing
         1 skipped
         
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 }

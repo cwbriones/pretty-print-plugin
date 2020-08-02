@@ -2,10 +2,10 @@ package io.briones.gradle.format
 
 import com.google.common.truth.Truth.assertThat
 import io.briones.gradle.format.test.MockTestDescriptor
-import org.junit.jupiter.api.Test
 import io.briones.gradle.render.fqDisplayName
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import java.time.Duration
 
 class FormattingTests {

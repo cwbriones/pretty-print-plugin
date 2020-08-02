@@ -1,7 +1,7 @@
 package io.briones.gradle.format.test
 
-import io.briones.gradle.render.TestRenderer
 import io.briones.gradle.output.OutputWriter
+import io.briones.gradle.render.TestRenderer
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
@@ -160,7 +160,7 @@ abstract class MockLeafTestResult(
     override fun getTestCount(): Long = successfulTestCount + skippedTestCount + failedTestCount
     override fun getSuccessfulTestCount(): Long = 0
     override fun getSkippedTestCount(): Long = 0
-    override fun getFailedTestCount(): Long  = 0
+    override fun getFailedTestCount(): Long = 0
 }
 
 class SuccessfulTestResult(
@@ -190,7 +190,7 @@ class FailedTestResult(
     override fun getExceptions(): List<Throwable> = listOf(propException)
 }
 
-fun <T: OutputWriter> testContainer(out: T, renderer: TestRenderer<T>, events: MockSuiteContainer.() -> Unit) {
+fun <T : OutputWriter> testContainer(out: T, renderer: TestRenderer<T>, events: MockSuiteContainer.() -> Unit) {
     val listener = renderer.toListener(out)
     testContainer(listener, events)
 }

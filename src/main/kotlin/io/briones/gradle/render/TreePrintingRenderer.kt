@@ -9,12 +9,12 @@ import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 
-class TreePrintingRenderer : TestRenderer<IndentingOutputWriter> {
+class TreePrintingRenderer(val symbols: Symbols) : TestRenderer<IndentingOutputWriter> {
     override fun renderTestResult(out: IndentingOutputWriter, testDescriptor: TestDescriptor, result: TestResult) {
         when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> out.success().append("✓").plain()
-            TestResult.ResultType.FAILURE -> out.failure().append("✗")
-            TestResult.ResultType.SKIPPED -> out.plain().append("-")
+            TestResult.ResultType.SUCCESS -> out.success().append(symbols.success).plain()
+            TestResult.ResultType.FAILURE -> out.failure().append(symbols.failure)
+            TestResult.ResultType.SKIPPED -> out.plain().append(symbols.skipped)
             else -> out.plain().append(" ")
         }
         val elapsed = result.humanReadableDuration()

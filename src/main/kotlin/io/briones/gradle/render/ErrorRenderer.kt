@@ -13,7 +13,7 @@ import org.gradle.api.tasks.testing.TestResult
  * If `displayFailuresInline` is true, the exceptions will be reported after each individual
  * test run. They will otherwise be reported after all tests have completed.
  */
-class ErrorPrintingRenderer(
+class ErrorRenderer(
     private val displayFailuresInline: Boolean
 ) : TestRenderer<IndentingOutputWriter> {
     private class TestFailure(
@@ -46,7 +46,6 @@ class ErrorPrintingRenderer(
         if (failures.isEmpty()) {
             return
         }
-        out.println()
         for ((i, failure) in failures.withIndex()) {
             val e = failure.exception
             val fullName = failure.descriptor.fqDisplayName()

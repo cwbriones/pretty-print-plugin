@@ -131,8 +131,8 @@ class CompositeTestResult(
             .toList()
     }
 
-    override fun getEndTime() = propStartTime
-    override fun getStartTime() = propEndTime
+    override fun getStartTime() = propStartTime
+    override fun getEndTime() = propEndTime
 }
 
 class MockTestDescriptor(

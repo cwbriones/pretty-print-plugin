@@ -8,11 +8,11 @@ import io.briones.gradle.output.plain
 import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestResult
 
-fun newListPrintingRenderer(): TestRenderer<OutputWriter> = SimpleTestRenderer { out, testDescriptor, result ->
+fun newListPrintingRenderer(symbols: Symbols): TestRenderer<OutputWriter> = SimpleTestRenderer { out, testDescriptor, result ->
     when (result.resultType) {
-        TestResult.ResultType.SUCCESS -> out.success().append("✓").plain()
-        TestResult.ResultType.FAILURE -> out.failure().append("✗")
-        TestResult.ResultType.SKIPPED -> out.plain().append("-")
+        TestResult.ResultType.SUCCESS -> out.success().append(symbols.success).plain()
+        TestResult.ResultType.FAILURE -> out.failure().append(symbols.failure)
+        TestResult.ResultType.SKIPPED -> out.plain().append(symbols.skipped)
         else -> out.plain().append(" ")
     }
     val elapsed = result.humanReadableDuration()

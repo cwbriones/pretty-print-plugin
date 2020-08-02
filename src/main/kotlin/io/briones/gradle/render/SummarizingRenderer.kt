@@ -10,7 +10,7 @@ import io.briones.gradle.output.success
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 
-class SummarizingRenderer: TestRenderer<IndentingOutputWriter> {
+class SummarizingRenderer(private val symbols: Symbols): TestRenderer<IndentingOutputWriter> {
     override fun renderSuiteResult(out: IndentingOutputWriter, suiteDescriptor: TestDescriptor, result: TestResult) {
         if (suiteDescriptor.parent == null) {
             summarize(out, result)
@@ -37,7 +37,7 @@ class SummarizingRenderer: TestRenderer<IndentingOutputWriter> {
             .println()
             .success()
             .applyIf(allPassed) {
-                it.append("✓ ")
+                it.append(symbols.success).append(" ")
             }
             .append("$successCount passing")
             .plain()

@@ -1,6 +1,7 @@
 package io.briones.gradle.format
 
 import io.briones.gradle.output.IndentingOutputWriter
+import io.briones.gradle.render.Symbols
 import io.briones.gradle.render.TestRenderer
 import io.briones.gradle.render.TreePrintingRenderer
 import io.briones.gradle.render.newDotPrintingRenderer
@@ -11,10 +12,16 @@ enum class Format {
     List,
     Mocha;
 
-    internal fun listener(): TestRenderer<IndentingOutputWriter> = when (this) {
+    internal fun listener(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
         Dot -> newDotPrintingRenderer(80)
-        List -> newListPrintingRenderer()
-        Mocha -> TreePrintingRenderer()
+        List -> newListPrintingRenderer(symbols)
+        Mocha -> TreePrintingRenderer(symbols)
+    }
+
+    internal fun reporters(symbols: Symbols): TestRenderer<IndentingOutputWriter> = when (this) {
+        Dot -> newDotPrintingRenderer(80)
+        List -> newListPrintingRenderer(symbols)
+        Mocha -> TreePrintingRenderer(symbols)
     }
 
     fun supportsInlineExceptions(): Boolean = when (this) {

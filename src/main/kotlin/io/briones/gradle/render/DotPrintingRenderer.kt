@@ -5,8 +5,6 @@ import io.briones.gradle.output.bold
 import io.briones.gradle.output.failure
 import io.briones.gradle.output.info
 import io.briones.gradle.output.plain
-import io.briones.gradle.render.SimpleTestRenderer
-import io.briones.gradle.render.TestRenderer
 import org.gradle.api.tasks.testing.TestResult
 
 fun newDotPrintingRenderer(maxWidth: Int): TestRenderer<OutputWriter> {

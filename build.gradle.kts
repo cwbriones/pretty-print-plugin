@@ -4,6 +4,7 @@ plugins {
     `maven-publish`
 
     id("io.gitlab.arturbosch.detekt") version "1.10.0"
+    id("org.jlleitschuh.gradle.ktlint") version "9.3.0"
 }
 
 group = "io.briones.gradle"
@@ -59,4 +60,3 @@ gradlePlugin {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
-

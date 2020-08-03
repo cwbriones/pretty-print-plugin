@@ -1,0 +1,44 @@
+name: CI
+
+# Controls when the action will run.
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Cache JDK Dev Distro
+      uses: actions/cache@v2
+      env:
+        cache-name: jdkw-cache
+      with:
+        path:
+          ~/.jdk
+        key: ${{ runner.os }}-jdkw-${{ hashFiles('.jdkw') }}
+        restore-keys: |
+          ${{ runner.os }}-jdkw-
+      
+    - name: Cache Gradle Artifacts
+      uses: actions/cache@v2
+      env:
+        cache-name: gradle-cache
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: test
+      run: ./jdk-wrapper.sh ./gradlew test
+
+    - name: lint
+      run: ./jdk-wrapper.sh ./gradlew ktlintCheck detekt
